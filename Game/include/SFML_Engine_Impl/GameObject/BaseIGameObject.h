@@ -9,20 +9,14 @@
 // but that only if you want to create your own implementation of GameObject 
 
 
-// Forward Declaration don't mind 
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFMl/Audio/Music.hpp>
+#include <SFMl/Audio/Sound.hpp>
+#include <SFMl/Audio/SoundBuffer.hpp>
+
 class ISFMLScene;
-namespace sf
-{
-	class SoundBuffer;
-	class Sound;
-	class Font;
-	class VertexArray;
-	class Text;
-	class RectangleShape;
-	class CircleShape;
-	class Drawable;
-	class Music;
-}
 
 // LivingGameObject hav 2 function relative to component but it's just a child of IGameObject, must use the child implementation if your not fully in control of what your doing 
 class LivingGameObject : public IGameObject
@@ -111,7 +105,6 @@ class CollidableRectangleRLGO : public RectangleRLGO
 {
 public:
 	CollidableRectangleRLGO(ISFMLScene* scene);
-
 	// IMPORTANT automatic logic for collision if you want debug tool YOU MUST CALL THIS implementation like that : CollidableRectangleRLGO::Update(deltatime) in child class 
 	void Update(float deltatime) override;
 private:

@@ -96,7 +96,7 @@ public:
 			0.0f,scale.y, 0,
 			0.f, 0.f,1.0f
 		};
-		KT::Vector3F centerHomogeneous{ obb.center.x, obb.center.y, 0.0f };
+		KT::Vector3F centerHomogeneous{ obb.center.x, obb.center.y, 1.0f };
 		KT::Vector3F transformedCenter = ScaleMatrix.MatrixProduct(centerHomogeneous);
 	
 		obb.center.x = transformedCenter.x;
@@ -123,7 +123,7 @@ public:
 		obb.center.y = transformedCenter.y;
 
 		for (int i = 0; i < 2; ++i) {
-			KT::Vector3F axeHomogenous{ obb.axes[i].x, obb.axes[i].y, 1.f };
+			KT::Vector3F axeHomogenous{ obb.axes[i].x, obb.axes[i].y, 0.f };
 			KT::Vector3F transformedAxe = RotationMatrix.MatrixProduct(axeHomogenous);
 
 			obb.axes[i].x = transformedAxe.x;
@@ -156,25 +156,47 @@ public:
 		TranslatePosition(globalOBB, transform);
 		return globalOBB;
 	}
-	void SetOBB(const KT::OBB2DF& obb)
+	void AddOBB(const KT::OBB2DF& obb = KT::OBB2DF{})
 	{
-		m_localOBB = obb;
+		m_localOBBs.push_back(obb);
+	}
+	size_t getNumberOfOBB() const
+	{
+		return m_localOBBs.size();
+	}
+	void eraseOBB(size_t index)
+	{
+		if (index >= m_localOBBs.size())
+			throw std::out_of_range("out of range");
+
+		m_localOBBs.erase(m_localOBBs.begin() + static_cast<int>(index));
+	}
+	void SetOBB(size_t index,const KT::OBB2DF& obb)
+	{
+		if (index >= m_localOBBs.size())
+			throw std::out_of_range("out of range");
+		m_localOBBs[index] = obb;
 	}
 	void SetTransform(sf::Transformable* transform)
 	{
 		m_transform = transform;
 	}
-	KT::OBB2DF GetLocalOBB() const
+	std::vector<KT::OBB2DF> GetLocalOBB() const
 	{
-		return m_localOBB;
+		return m_localOBBs;
 	}
-	KT::OBB2DF GetGlobalOBB() const
+	std::vector<KT::OBB2DF> GetGlobalOBBs() const
 	{
+		std::vector<KT::OBB2DF> m_globalOBBs;
 		if (!m_transform)
 			throw std::runtime_error("you must set a transform");
-		return ToWorldPosition(m_localOBB, m_transform);
+		for (auto& obb : m_localOBBs)
+		{
+			m_globalOBBs.push_back(ToWorldPosition(obb, m_transform));
+		}
+		return m_globalOBBs;
 	}
 private:
-	KT::OBB2DF m_localOBB;
+	std::vector<KT::OBB2DF> m_localOBBs;
 	sf::Transformable* m_transform;
 };

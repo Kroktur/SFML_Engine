@@ -137,11 +137,14 @@ CollidableRectangleRLGO::CollidableRectangleRLGO(ISFMLScene* scene): RectangleRL
 {
 	m_component = AddComponent<CollisionComponent<IGameObject>>();
 	m_component->SetTransform(GetRectangle());
+	m_component->AddOBB();
 }
+
+
 
 void CollidableRectangleRLGO::Update(float deltatime)
 {
-	m_component->SetOBB( Mapper2DRectangle::GetOrCreateOBB({ GetRectangle()->getSize().x,GetRectangle()->getSize().y },GetRectangle()));
+	m_component->SetOBB( 0,Mapper2DRectangle::GetOrCreateOBB({ GetRectangle()->getSize().x,GetRectangle()->getSize().y },GetRectangle()));
 	RectangleRLGO::Update(deltatime);
 }
 
@@ -245,10 +248,11 @@ CollidableCircleRLGO::CollidableCircleRLGO(ISFMLScene* scene): CircleRLGO(scene)
 {
 	m_component = AddComponent<CollisionComponent<IGameObject>>();
 	m_component->SetTransform(GetCirle());
+	m_component->AddOBB();
 }
 
 void CollidableCircleRLGO::Update(float deltatime)
 {
-	m_component->SetOBB(Mapper2DCircle::GetOrCreateOBB(GetCirle()->getRadius(), GetCirle())); 
+	m_component->SetOBB(0,Mapper2DCircle::GetOrCreateOBB(GetCirle()->getRadius(), GetCirle())); 
 	CircleRLGO::Update(deltatime);
 }

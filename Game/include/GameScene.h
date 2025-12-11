@@ -3,8 +3,13 @@
 #include "SFML_Engine_Impl/SFMLComposite.h"
 
 //Important for Composite
+#include "Core/CollisionSolver.h"
 #include "SFML_Engine_Impl/GameObject/BaseIGameObject.h"
 #include "SFML_Engine_Impl/GameObject/IGameObject.h"
+
+#include "Core/Dispacher.h"
+
+using solver = KT::SolverResult<float, 2, KT::Vector2>;
 
 
 class GameScene : public ISFMLScene, public SFMLRoot<GameScene>
@@ -13,14 +18,16 @@ public:
 	GameScene(const KT::Chrono<float>::Time& refreshTime);
 
 	void Init() override;
-
 	void Update(const float& deltatime) override;
-
 	void ProcessInput() override;
-
 	void Render(const float& alpha) override;
-
 	void Destroy() override;
 
 private:
+	void MyInit();
+	void MyUpdate(const float& deltatime);
+	void MyInput(const std::optional<sf::Event>& event) ;
+	void MyRender(const float& alpha) ;
+	void MyDestroy();
+	KT::FNDispatcher<IGameObject, IGameObject, void, KT::typelist<solver>> m_dispatcher;
 };

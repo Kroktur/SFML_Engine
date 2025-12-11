@@ -1,6 +1,7 @@
 #pragma once
 #include "Math/AABB.h"
 #include "Math/BoundingSphere.h"
+#include "Math/OBB.h"
 #include "Math/VectorND.h"
 
 namespace KT
