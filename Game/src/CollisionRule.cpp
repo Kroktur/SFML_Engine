@@ -1,6 +1,14 @@
 #include "CollisionRule.h"
 
-void Rule::Collide(RandomSquare& c, Player& c2, solver)
+void Rule::Collide(MyClassCircle& c, Enemy& c2, solver)
 {
-	c.GetRectangle()->setFillColor(sf::Color::Red);
+	c.GetCirle()->setFillColor(sf::Color::Blue);
+
 }
+
+void Rule::Collide(Enemy& c2, MyClassRect& c, solver)
+{
+	c2.EnableDeath();
+}
+
+

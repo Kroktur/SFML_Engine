@@ -5,7 +5,7 @@
 // YOU will Found Here All the Object you can create child From
 // Composite One can have multiple child like player has gun has bullet ....
 // leaf One are for the last leaf like a bullet 
-// THAT THE COMPLICATED PART
+// THAT IS THE COMPLICATED PART
 
                                                                    //               MUSIC CLASS                       //
 
