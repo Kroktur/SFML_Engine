@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     std::filesystem::path exePath = argv[0];
     std::filesystem::path projectRoot = exePath.parent_path().parent_path().parent_path().parent_path().parent_path();
 
-    FontLoader::SetGlobalFIlePath(projectRoot / "Ressources" / "Fonts");
+    FontLoader::SetGlobalFIlePath((projectRoot / "Ressources" / "Fonts").relative_path() );
     TextureLoader::SetGlobalFIlePath(projectRoot / "Ressources" / "Assets");
     SoundBufferLoader::SetGlobalFIlePath(projectRoot / "Ressources" / "Sounds");
     MusicLoader::SetGlobalFIlePath(projectRoot / "Ressources" / "Musics");

@@ -2,13 +2,7 @@
 #include <functional>
 #include <Core/Scene.h>
 #include <SFML/Graphics/RenderWindow.hpp>
-
-
-
-class Camera
-{
-	
-};
+#include "Camera.h"
 
 class ISFMLScene : public KT::ISceneBase<sf::RenderWindow, Camera>
 {

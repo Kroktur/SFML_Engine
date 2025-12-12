@@ -14,7 +14,7 @@ void GameScene::MyInit()
 	//First of All Init Dispatcher
 	m_dispatcher.Add< RandomSquare, Player, Rule::Collide, true>();
 
-	
+	TextureLoader::Load("SpriteSheet_Nova.png", {}, {});
 	
 	// create start Object here
 	/*new CollidableRectangleRLGO(root);*/

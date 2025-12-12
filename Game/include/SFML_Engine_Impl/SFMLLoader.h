@@ -10,35 +10,13 @@
 #include <SFML/Audio/Music.hpp>
 namespace Priv
 {
-	static std::unique_ptr <sf::Texture> LoadSfmlTexture(const std::string& filename, bool sRgb, const sf::IntRect& area)
-	{
-		std::unique_ptr <sf::Texture>texture = std::make_unique<sf::Texture>();
-		if (!texture->loadFromFile(filename, sRgb, area))
-			throw std::runtime_error("file not found");
-		return std::move(texture);
-	}
-	static std::unique_ptr <sf::Font> LoadSfmlFont(const std::string& filename)
-	{
-		std::unique_ptr <sf::Font> font = std::make_unique<sf::Font>();
-		if (!font->openFromFile(filename))
-			throw std::runtime_error("file not found");
-		return std::move(font);
-	}
-	static std::unique_ptr <sf::SoundBuffer> LoadSfmlSoundBuffer(const std::string& filename)
-	{
-		std::unique_ptr <sf::SoundBuffer> sBuffer = std::make_unique<sf::SoundBuffer>();
-		if (!sBuffer->loadFromFile(filename))
-			throw std::runtime_error("file not found");
-		return std::move(sBuffer);
-	}
+	 std::unique_ptr <sf::Texture> LoadSfmlTexture(const std::string& filename, bool sRgb, const sf::IntRect& area);
 
-	static std::unique_ptr <sf::Music> LoadSfmlMusic(const std::string& filename)
-	{
-		std::unique_ptr <sf::Music> music = std::make_unique<sf::Music>();
-		if (!music->openFromFile(filename))
-			throw std::runtime_error("file not found");
-		return std::move(music);
-	}
+	 std::unique_ptr <sf::Font> LoadSfmlFont(const std::string& filename);
+
+	 std::unique_ptr <sf::SoundBuffer> LoadSfmlSoundBuffer(const std::string& filename);
+
+	 std::unique_ptr <sf::Music> LoadSfmlMusic(const std::string& filename);
 }
 
 //Global_using
