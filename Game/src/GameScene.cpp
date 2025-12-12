@@ -11,13 +11,16 @@ GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(ref
 void GameScene::MyInit()
 {
 	auto* root = static_cast<SFMLRoot<GameScene>*>(this);
+
 	//First of All Init Dispatcher
 	m_dispatcher.Add< RandomSquare, Player, Rule::Collide, true>();
+	m_dispatcher.Add< Player, MyCircle, Rule::Collide, true>();
 
 	TextureLoader::Load("SpriteSheet_Nova.png", {}, {});
 	
 	// create start Object here
-	/*new CollidableRectangleRLGO(root);*/
+
+	new MyCircle(root);
 	auto* player = new Player(root);
 	new RandomSquare(root);
 
@@ -40,4 +43,5 @@ void GameScene::MyRender(const float& alpha)
 
 void GameScene::MyDestroy()
 {
+
 }

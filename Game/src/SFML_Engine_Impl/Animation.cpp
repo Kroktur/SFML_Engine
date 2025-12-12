@@ -59,7 +59,9 @@ IAnimation::IAnimation(AnimationManager* manager, size_t start, size_t end, cons
 	m_manager(manager)
 	,m_counter(start,end)
 	,m_point(point)
-{}
+{
+	int toto = 5;
+}
 
 void IAnimation::SetMinMax(size_t start, size_t end)
 {

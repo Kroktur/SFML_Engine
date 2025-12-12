@@ -4,7 +4,6 @@
 #include "SFML_Engine_Impl/SFMLLoader.h"
 #include "SFML_Engine_Impl/SFMLSceneManager.h"
 
-
 int main(int argc, char** argv)
 {
     // Path to SFML_Engine
@@ -20,4 +19,6 @@ int main(int argc, char** argv)
     SFMLSceneManager manager(window);
     manager.AddScene(0,std::make_unique<GameScene>(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(1.0f / 60.0f)),true);
     manager.Run(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(1.0f / 60.0f));
+
 }
+

@@ -31,50 +31,68 @@ Player::Player(BaseComposite* parent): CollidableRectangleComposite(parent)
 
 void Player::OnInit()
 {
+	m_managerPlayer = new AnimationManager{ "SpriteSheet_Nova.png", KT::Vector2UI(528, 624), KT::Vector2UI(0, 0), KT::Vector2UI(11, 13) };
+	m_animationPlayer = new LoopAnimation{ m_managerPlayer,89,94,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1) };
+	GetRectangle()->setPosition({ 400,400 });
 	GetRectangle()->setSize({ 100,100 });
-	GetRectangle()->move({ 400,4 });
-	GetRectangle()->rotate(sf::degrees(23));
+	m_animationPlayer->SetTexture(GetRectangle());
+
+	
 }
 
 void Player::Update(float deltatime)
 {
 	auto rect = GetRectangle();
+	m_animationPlayer->UpdateShapeFrame(GetRectangle());
 
 
-	if (ZQSD[0])
-		rect->move({ 0,-100 * deltatime });
-	if (ZQSD[1])
-		rect->move({ -100 * deltatime ,0 });
-	if (ZQSD[2])
-		rect->move({ 0,100 * deltatime });
-	if (ZQSD[3])
-		rect->move({ 100 * deltatime,0 });
+	if (moveRight)
+		rect->move({ 200 * deltatime,0 });
+	if (moveLeft)
+		rect->move({ -200 * deltatime ,0 });
+	if (jump && GetRectangle()->getPosition().y == 400.0f)
+	{
+		movingUp = true;
+	}
+	if (GetRectangle()->getPosition().y <= 350.0f)
+	{
+		movingUp = false;
+		movingDown = true;
+	}
+	if (GetRectangle()->getPosition().y >= 400.0f)
+	{
+		movingDown = false;
+	}
+	if(movingUp)
+	{
+		rect->move({ 0,-400 * deltatime });
+	}
+	if(movingDown)
+	{
+		rect->move({ 0,+400 * deltatime });
+	}
 
+		
 
 	CollidableRectangleComposite::Update(deltatime);
 }
 
 void Player::Input(const std::optional<sf::Event>& event)
 {
-	ZQSD[0] = false;
-	ZQSD[1] = false;
-	ZQSD[2] = false;
-	ZQSD[3] = false;
+	moveLeft = false;
+	moveRight = false;
+	jump = false;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 	{
-		ZQSD[0] = true;
+		moveRight = true;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
 	{
-		ZQSD[1] = true;
+		moveLeft = true;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 	{
-		ZQSD[2] = true;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-	{
-		ZQSD[3] = true;
+		jump = true;
 	}
 }
