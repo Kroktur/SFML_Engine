@@ -4,6 +4,7 @@
 #include "CollisionRule.h"
 #include "BusinessMan.h"
 #include "MyPlayer.h"
+#include "Wall.h"
 
 GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime)
 {}
@@ -21,8 +22,9 @@ void GameScene::MyInit()
 	
 	// create start Object here
 	/*new CollidableRectangleRLGO(root);*/
-	m_player = new MyPlayer(root, 300.0f);
-	new BusinessMan(root, 800.0f);
+	new Wall(root, { -2.0f + 1.0f,0.0f }, { 2,static_cast<float>(GetWindow().getSize().y) });
+	//m_player = new MyPlayer(root, 300.0f);
+	//new BusinessMan(root, 800.0f);
 }
 
 void GameScene::MyUpdate(const float& deltatime)
