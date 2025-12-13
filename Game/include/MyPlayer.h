@@ -24,7 +24,8 @@ private:
 	KT::StateMachine<MyPlayer>* m_playerStateMachine;
 	AnimationManager* m_manager;
 	LoopAnimation* m_animation;
-
+	bool mleft;
+	bool mright;
 };
 
 class PlayerState : public KT::IState<MyPlayer>

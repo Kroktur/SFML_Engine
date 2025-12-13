@@ -2,6 +2,7 @@
 #include "MyGameObject.h"
 #include "SFML_Engine_Impl/PhysicSolver.h"
 #include "CollisionRule.h"
+#include "BusinessMan.h"
 #include "MyPlayer.h"
 
 GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime)
@@ -20,8 +21,8 @@ void GameScene::MyInit()
 	
 	// create start Object here
 	/*new CollidableRectangleRLGO(root);*/
-	m_player = new MyPlayer(root, 800.0f);
-
+	m_player = new MyPlayer(root, 300.0f);
+	new BusinessMan(root, 800.0f);
 }
 
 void GameScene::MyUpdate(const float& deltatime)

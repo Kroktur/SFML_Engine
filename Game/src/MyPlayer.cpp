@@ -27,6 +27,10 @@ float MyPlayer::GetCapY() const
 
 void MyPlayer::Update(float deltatime)
 {
+	if (mleft)
+		GetRectangle()->move({ -300 * deltatime ,0});
+	if (mright)
+		GetRectangle()->move({ 300 * deltatime ,0 });
 	m_playerStateMachine->ChangeState();
 	m_playerStateMachine->Update(deltatime);
 }
@@ -38,6 +42,12 @@ void MyPlayer::Render(float alpha)
 
 void MyPlayer::Input(const std::optional<sf::Event>& event)
 {
+	mleft = false;
+	mright = false;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+		mleft = true;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+		mright = true;
 	m_playerStateMachine->ProcessInput();
 }
 
