@@ -28,6 +28,7 @@ void BulletPlayer::Update(float deltatime)
 void BulletPlayer::Stop()
 {
 	isGoingToDie = true;
+	DisableCollision(0);
 }
 
 void BulletPlayer::OnDestroy()

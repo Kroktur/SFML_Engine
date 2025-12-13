@@ -179,8 +179,6 @@ void JumpPlayerState::Update(const float& dt)
 	float y = std::max(m_entity->GetRectangle()->getPosition().y - m_entity->GetSpeed() * dt, m_entity->GetJumpHeight());
 	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
 
-	
-
 	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
 	if (y == m_entity->GetJumpHeight())
 	{

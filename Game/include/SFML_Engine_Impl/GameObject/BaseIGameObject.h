@@ -107,6 +107,7 @@ public:
 	CollidableRectangleRLGO(ISFMLScene* scene);
 	// IMPORTANT automatic logic for collision if you want debug tool YOU MUST CALL THIS implementation like that : CollidableRectangleRLGO::Update(deltatime) in child class 
 	void PrivUpdate(float deltatime) override;
+	void DisableCollision(size_t index);
 private:
 	CollisionComponent<IGameObject>* m_component;
 };
@@ -163,6 +164,7 @@ public:
 	CollidableCircleRLGO(ISFMLScene* scene);
 	// IMPORTANT automatic logic for collision if you want debug tool YOU MUST CALL THIS implementation like that : CollidableCircleRLGO::Update(deltatime) in child class 
 	void PrivUpdate(float deltatime) override;
+	void DisableCollision(size_t index);
 
 private:
 	CollisionComponent<IGameObject>* m_component;

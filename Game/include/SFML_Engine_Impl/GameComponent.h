@@ -163,6 +163,19 @@ public:
 	{
 		return m_localOBBs.size();
 	}
+	void DisableOBB(size_t index)
+	{
+		int i = 0;
+		for(auto it = m_localOBBs.begin(); it != m_localOBBs.end();++it)
+		{
+			if(i == static_cast<int>(index))
+			{
+				m_localOBBs.erase(it);
+				return;
+			}
+			++i;
+		}
+	}
 	void eraseOBB(size_t index)
 	{
 		if (index >= m_localOBBs.size())

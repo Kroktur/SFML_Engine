@@ -144,8 +144,19 @@ CollidableRectangleRLGO::CollidableRectangleRLGO(ISFMLScene* scene): RectangleRL
 
 void CollidableRectangleRLGO::PrivUpdate(float deltatime)
 {
+	if(!m_component->GetLocalOBB().empty())
 	m_component->SetOBB( 0,Mapper2DRectangle::GetOrCreateOBB({ GetRectangle()->getSize().x,GetRectangle()->getSize().y },GetRectangle()));
 	RectangleRLGO::PrivUpdate(deltatime);
+}
+
+void CollidableRectangleRLGO::DisableCollision(size_t index)
+{
+	m_component->DisableOBB(index);
+}
+
+void CollidableCircleRLGO::DisableCollision(size_t index)
+{
+	m_component->DisableOBB(index);
 }
 
 TextRLGO::TextRLGO(ISFMLScene* scene, const sf::Font& font):BaseRendererLGO(scene), m_text(std::make_unique<sf::Text>(font)), m_array(std::make_unique<sf::VertexArray>(sf::PrimitiveType::LineStrip, line_size))
@@ -253,6 +264,7 @@ CollidableCircleRLGO::CollidableCircleRLGO(ISFMLScene* scene): CircleRLGO(scene)
 
 void CollidableCircleRLGO::PrivUpdate(float deltatime)
 {
+	if (!m_component->GetLocalOBB().empty())
 	m_component->SetOBB(0,Mapper2DCircle::GetOrCreateOBB(GetCirle()->getRadius(), GetCirle())); 
 	CircleRLGO::PrivUpdate(deltatime);
 }

@@ -15,6 +15,7 @@ void Rule::Collide(MyGameObject& c, MyPlayer& c2, solver s)
 
 void Rule::Collide(MyGameObject& c, BulletPlayer& c2, solver s)
 {
+	c.MoveBack();
 	c2.GetRectangle()->move({- s.mvt.x,-s.mvt.y });
 	c2.Stop();
 }

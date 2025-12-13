@@ -14,5 +14,4 @@ namespace Rule
 	 void Collide(MyGameObject& c, MyPlayer& c2, solver);
 	 void Collide(MyGameObject& c, BulletPlayer& c2, solver);
 
-
 }
