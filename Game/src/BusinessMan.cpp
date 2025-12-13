@@ -119,7 +119,7 @@ void BusinessManRightState::Update(const float& dt)
 	}
 	else
 	{
-		auto potentialX = m_entity->GetRectangle()->getPosition().x + 100 * dt;
+		auto potentialX = m_entity->GetRectangle()->getPosition().x + 50 * dt;
 		auto playerX = player->GetRectangle()->getPosition().x;
 		float x = std::min(potentialX, playerX);
 		m_entity->GetRectangle()->setPosition({ x,m_entity->GetCapY()});
@@ -156,7 +156,7 @@ void BusinessManLeftState::Update(const float& dt)
 	}
 	else
 	{
-		auto potentialX = m_entity->GetRectangle()->getPosition().x - 100 * dt;
+		auto potentialX = m_entity->GetRectangle()->getPosition().x - 50 * dt;
 		auto playerX = player->GetRectangle()->getPosition().x;
 		float x = std::max(potentialX, playerX);
 		m_entity->GetRectangle()->setPosition({ x,m_entity->GetCapY() });

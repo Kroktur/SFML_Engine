@@ -19,7 +19,6 @@ void GameScene::MyInit()
 
 	m_dispatcher.Add< Bullet, Bullet, Rule::Collide, false>();
 	m_dispatcher.Add< BusinessMan, MyPlayer, Rule::Collide, true>();
-	m_dispatcher.Add< BusinessMan, BulletPlayer, Rule::Collide, true>();
 	m_dispatcher.Add< MyPlayer, Bullet, Rule::Collide, true>();
 	m_dispatcher.Add< Bullet, BulletPlayer, Rule::Collide, true>();
 
@@ -34,6 +33,8 @@ void GameScene::MyInit()
 	m_dispatcher.Add< MyPlayer, BulletPlayer, Rule::Collide, true>();
 	m_dispatcher.Add< BulletPlayer, BulletPlayer, Rule::Collide, false>();
 	m_dispatcher.Add< BusinessMan, Bullet, Rule::Collide, true>();
+	m_dispatcher.Add< BulletPlayer, BusinessMan, Rule::Collide, true>();
+
 
 
 

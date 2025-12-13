@@ -16,8 +16,6 @@ namespace Rule
     void Collide(Bullet& c, Bullet& c2, solver);
     void Collide(BusinessMan& c, MyPlayer& c2, solver s);
 
-    void Collide(BusinessMan& c, BulletPlayer& c2, solver s);
-
     void Collide(MyPlayer& player, Bullet& bullet, solver s);
     void Collide(Bullet& c, BulletPlayer& c2, solver s);
 
