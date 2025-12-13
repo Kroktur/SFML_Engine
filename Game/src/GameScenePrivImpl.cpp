@@ -136,3 +136,8 @@ void GameScene::Destroy()
 			go->OnDestroy();
 		});
 }
+
+MyPlayer* GameScene::GetPlayer() const
+{
+	return m_player;
+}

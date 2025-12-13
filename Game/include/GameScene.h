@@ -9,6 +9,7 @@
 
 #include "Core/Dispacher.h"
 
+class MyPlayer;
 using solver = KT::SolverResult<float, 2, KT::Vector2>;
 
 
@@ -22,6 +23,7 @@ public:
 	void ProcessInput() override;
 	void Render(const float& alpha) override;
 	void Destroy() override;
+	MyPlayer* GetPlayer() const;
 
 private:
 	void MyInit();
@@ -31,4 +33,5 @@ private:
 	void MyDestroy();
 	KT::FNDispatcher<IGameObject, IGameObject, void, KT::typelist<solver>> m_dispatcher;
 	std::optional<bool> m_debugMode;
+	MyPlayer* m_player;
 };

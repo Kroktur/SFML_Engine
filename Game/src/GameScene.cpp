@@ -20,7 +20,7 @@ void GameScene::MyInit()
 	
 	// create start Object here
 	/*new CollidableRectangleRLGO(root);*/
-	new MyPlayer(root, 800.0f);
+	m_player = new MyPlayer(root, 800.0f);
 
 }
 
