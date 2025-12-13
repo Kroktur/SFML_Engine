@@ -4,7 +4,6 @@
 #include "CollisionRule.h"
 #include "BusinessMan.h"
 #include "MyPlayer.h"
-#include "Wall.h"
 
 GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime)
 {}
@@ -16,15 +15,18 @@ void GameScene::MyInit()
 	auto* root = static_cast<SFMLRoot<GameScene>*>(this);
 	//First of All Init Dispatcher
 
-	//m_dispatcher.Add< RandomSquare, Player, Rule::Collide, true>();
+	m_dispatcher.Add< BusinessMan, Bullet, Rule::Collide, true>();
+	m_dispatcher.Add< Rect, Bullet, Rule::Collide, true>();
+	m_dispatcher.Add< Bullet, Bullet, Rule::Collide, false>();
 
 	TextureLoader::Load("SpriteSheet_Nova.png", {}, {});
 	
 	// create start Object here
 	/*new CollidableRectangleRLGO(root);*/
-	new Wall(root, { -2.0f + 1.0f,0.0f }, { 2,static_cast<float>(GetWindow().getSize().y) });
-	//m_player = new MyPlayer(root, 300.0f);
-	//new BusinessMan(root, 800.0f);
+	m_player = new MyPlayer(root, 300.0f);
+	new Rect(root);
+	new BusinessMan(root, 800.0f);
+	
 }
 
 void GameScene::MyUpdate(const float& deltatime)
