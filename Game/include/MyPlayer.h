@@ -3,6 +3,7 @@
 #include "Core/StateMachine.h"
 #include "SFML_Engine_Impl/Animation.h"
 
+class PlayerStateMachine;
 
 class MyPlayer : public CollidableRectangleComposite
 {
@@ -20,8 +21,33 @@ public:
 
 private:
 	float m_capY;
+	KT::StateMachine<MyPlayer>* m_playerStateMachine;
 	AnimationManager* m_manager;
 	LoopAnimation* m_animation;
 
 };
 
+class PlayerState : public KT::IState<MyPlayer>
+{
+public:
+	PlayerState(MyPlayer* owner,LoopAnimation* anim);
+
+protected:
+	LoopAnimation* m_animation;
+};
+
+class IdlePlayerState : public PlayerState
+{
+public:
+	IdlePlayerState(MyPlayer* owner, LoopAnimation* anim);
+
+	void ProcessInput() override;
+
+	void Update(const float& dt) override;
+
+	void Render(const float& alpha) override;
+
+	void OnEnter() override;
+
+	void OnExit() override;
+};
