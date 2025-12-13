@@ -230,3 +230,30 @@ public:
 
 	void OnEnter() override;
 };
+//
+class AttackState : public PlayerState
+{
+public:
+	AttackState(MyPlayer* owner, LoopAnimation* anim,bool isRight);
+	void Update(const float& dt) override;
+protected:
+	bool m_isRight;
+	KT::Chrono<float> m_attackTimer;
+	bool endAtack;
+};
+
+class AttackRightState : public AttackState
+{
+public:
+	AttackRightState(MyPlayer* owner, LoopAnimation* anim);
+	void OnEnter() override;
+	void ProcessInput() override;
+};
+
+class AttackLeftState : public AttackState
+{
+public:
+	AttackLeftState(MyPlayer* owner, LoopAnimation* anim);
+	void OnEnter() override;
+	void ProcessInput() override;
+};

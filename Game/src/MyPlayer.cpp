@@ -102,7 +102,7 @@ void LeftIdle::ProcessInput()
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
 	{
-		m_entity->Attack(false);
+		SetNextState<AttackLeftState>(m_animation);
 	}
 }
 
@@ -124,7 +124,8 @@ void RightIdle::ProcessInput()
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
 	{
-		m_entity->Attack(true);
+		SetNextState<AttackRightState>(m_animation);
+
 	}
 }
 
@@ -461,6 +462,62 @@ void DownRight::OnEnter()
 	//m_animation->SetMinMax(20, 21);
 	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.4f));
 }
+
+AttackState::AttackState(MyPlayer* owner, LoopAnimation* anim, bool isRight) : PlayerState(owner, anim), m_isRight(isRight),endAtack(false)
+{
+}
+
+void AttackState::Update(const float& dt)
+{
+	PlayerState::Update(dt);
+	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+
+	if (m_attackTimer.GetElapsedTime().AsSeconds() > 0.15f)
+	{
+		m_entity->Attack(m_isRight);
+		endAtack = true;
+	}
+
+}
+
+AttackRightState::AttackRightState(MyPlayer* owner, LoopAnimation* anim) : AttackState(owner, anim, true)
+{
+}
+
+void AttackRightState::OnEnter()
+{
+	m_animation->SetMinMax(1, 2);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.8f));
+		
+}
+
+void AttackRightState::ProcessInput()
+{
+	if (endAtack)
+	{
+		SetNextState<RightIdle>(m_animation);
+	}
+}
+
+AttackLeftState::AttackLeftState(MyPlayer* owner, LoopAnimation* anim) : AttackState(owner, anim, false)
+{
+}
+
+void AttackLeftState::OnEnter()
+{
+	m_animation->SetMinMax(9, 10);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.8f));
+}
+
+void AttackLeftState::ProcessInput()
+{
+	AttackState::ProcessInput();
+	if (endAtack)
+	{
+		SetNextState<LeftIdle>(m_animation);
+	}
+}
+
 
 //IdlePlayerState::IdlePlayerState(MyPlayer* owner, LoopAnimation* anim): PlayerState(owner, anim)
 //{}
