@@ -65,6 +65,8 @@ void GameScene::Update(const float& deltatime)
 			if (!go->HasComponent<CollisionComponent<IGameObject>>())
 				return;
 			auto box = go->GetComponent<CollisionComponent<IGameObject>>()->GetGlobalOBBs();
+			if (box.empty())
+				return;
 			SFMLSolver::ADD(component, box[0]);
 		});
 	auto ToExecute = SFMLSolver::Compute();
@@ -140,4 +142,14 @@ void GameScene::Destroy()
 MyPlayer* GameScene::GetPlayer() const
 {
 	return m_player;
+}
+
+BaseComposite* GameScene::GetLayer1() const
+{
+	return m_layer1;
+}
+
+BaseComposite* GameScene::GetLayer2() const
+{
+	return m_layer2;
 }

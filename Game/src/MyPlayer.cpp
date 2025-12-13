@@ -13,11 +13,11 @@ void MyPlayer::OnDestroy()
 void MyPlayer::OnInit()
 {
 	GetRectangle()->setSize({ 100,100 });
-	GetRectangle()->setPosition({0,m_capY});
+	GetRectangle()->setPosition({100,m_capY});
 	m_manager = new AnimationManager{ "SpriteSheet_Nova.png", KT::Vector2UI(528, 624), KT::Vector2UI(0, 0), KT::Vector2UI(11, 13) };
 	m_animation = new LoopAnimation{ m_manager,1,10,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f) };
 	m_animation->SetTexture(GetRectangle());
-	m_playerStateMachine = new KT::StateMachine<MyPlayer>(std::make_unique<IdlePlayerState>(this, m_animation), 1);
+	m_playerStateMachine = new KT::StateMachine<MyPlayer>(std::make_unique<RightIdle>(this, m_animation), 1);
 }
 
 float MyPlayer::GetCapY() const
@@ -41,10 +41,7 @@ void MyPlayer::Update(float deltatime)
 	m_playerStateMachine->Update(deltatime);
 }
 
-void MyPlayer::SetDirShoot(bool shootRight)
-{
-	isShootingRight = shootRight;
-}
+
 
 void MyPlayer::Render(float alpha)
 {
@@ -53,14 +50,13 @@ void MyPlayer::Render(float alpha)
 
 void MyPlayer::Input(const std::optional<sf::Event>& event)
 {
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
-		Attack();
+	
 	m_playerStateMachine->ProcessInput();
 }
 
-void MyPlayer::Attack()
+void MyPlayer::Attack(bool isShootingRight)
 {
-	if(m_attackCooldown.GetElapsedTime().AsSeconds() < 0.2f)
+	if(m_attackCooldown.GetElapsedTime().AsSeconds() < 0.1f)
 		return;
 	auto bullet = new BulletPlayer(this, {GetRectangle()->getPosition().x,GetRectangle()->getPosition().y}, isShootingRight);
 	bullet->OnInit();
@@ -70,294 +66,678 @@ void MyPlayer::Attack()
 PlayerState::PlayerState(MyPlayer* owner, LoopAnimation* anim): KT::IState<MyPlayer>(owner),m_animation(anim)
 {}
 
-IdlePlayerState::IdlePlayerState(MyPlayer* owner, LoopAnimation* anim): PlayerState(owner, anim)
+IdleBaseState::IdleBaseState(MyPlayer* owner, LoopAnimation* anim): PlayerState(owner,anim)
 {}
 
-void IdlePlayerState::ProcessInput()
+void IdleBaseState::Update(const float& dt)
 {
+	PlayerState::Update(dt);
+	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+}
+
+void IdleBaseState::ProcessInput()
+{
+	PlayerState::ProcessInput();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	{
+		SetNextState<MovingRight>(m_animation);
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
 	{
-		SetNextState<LeftPlayerState>(m_animation);
+		SetNextState<MovingLeft>(m_animation);
+
+	}
+		
+}
+
+LeftIdle::LeftIdle(MyPlayer* owner, LoopAnimation* anim): IdleBaseState(owner,anim)
+{}
+
+void LeftIdle::ProcessInput()
+{
+	IdleBaseState::ProcessInput();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+	{
+		SetNextState<JumpIdleLeftState>(m_animation);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
+	{
+		m_entity->Attack(false);
+	}
+}
+
+void LeftIdle::OnEnter()
+{
+		
+}
+
+RightIdle::RightIdle(MyPlayer* owner, LoopAnimation* anim): IdleBaseState(owner, anim)
+{}
+
+void RightIdle::ProcessInput()
+{
+	IdleBaseState::ProcessInput();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+	{
+		SetNextState<JumpIdleRightState>(m_animation);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
+	{
+		m_entity->Attack(true);
+	}
+}
+
+void RightIdle::OnEnter()
+{
+		
+}
+
+MovingBase::MovingBase(MyPlayer* owner, LoopAnimation* anim, float dirFactor): PlayerState(owner,anim),m_dirFactor(dirFactor)
+{
+		
+}
+
+void MovingBase::Update(const float& dt)
+{
+	PlayerState::Update(dt);
+	m_entity->GetRectangle()->move({ m_dirFactor * m_entity->GetSpeed() * dt, 0 });
+	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+}
+
+MovingLeft::MovingLeft(MyPlayer* owner, LoopAnimation* anim): MovingBase(owner, anim,-1)
+{
+		
+}
+
+void MovingLeft::OnEnter()
+{
+
+}
+
+void MovingLeft::ProcessInput()
+{
+	MovingBase::ProcessInput();
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+	{
+		SetNextState<LeftIdle>(m_animation);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 	{
-		SetNextState<RightPlayerState>(m_animation);
+		SetNextState<MovingRight>(m_animation);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 	{
-		SetNextState<JumpPlayerState>(m_animation);
+		SetNextState<JumpLeft>(m_animation);
 	}
-
 }
 
-void IdlePlayerState::Update(const float& dt)
+MovingRight::MovingRight(MyPlayer* owner, LoopAnimation* anim): MovingBase(owner, anim, 1)
 {
-	
-	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+
 }
 
-void IdlePlayerState::OnEnter()
+void MovingRight::OnEnter()
 {
-	m_animation->SetMinMax(89, 94);
+
 }
 
-void LeftPlayerState::ProcessInput() {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+void MovingRight::ProcessInput()
+{
+	MovingBase::ProcessInput();
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 	{
-		SetNextState<RightPlayerState>(m_animation);
+		SetNextState<RightIdle>(m_animation);
 	}
-	 if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
-	{
-		SetNextState<IdlePlayerState>(m_animation);
-	}
-	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-	 {
-		 SetNextState<JumpLeftPlayerState>(m_animation);
-	 }
-}
-
-void LeftPlayerState::Update(const float& dt)
-{
-	m_entity->GetRectangle()->move({ -m_entity->GetSpeed() *dt, 0 });
-	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-}
-
-void LeftPlayerState:: OnEnter() 
-{
-	m_animation->SetMinMax(23, 31);
-	m_entity->SetDirShoot(false);
-}
-
-void RightPlayerState::ProcessInput() 
-{
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
 	{
-		SetNextState<LeftPlayerState>(m_animation);
+		SetNextState<MovingLeft>(m_animation);
+
 	}
-	 if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 	{
-		SetNextState<IdlePlayerState>(m_animation);
+		SetNextState<JumpRight>(m_animation);
+
 	}
-	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-	 {
-		 SetNextState<JumpRightPlayerState>(m_animation);
-	 }
 }
 
-void RightPlayerState::Update(const float& dt) 
+JumpIdleBase::JumpIdleBase(MyPlayer* owner, LoopAnimation* anim): PlayerState(owner, anim)
 {
-	m_entity->GetRectangle()->move({ m_entity->GetSpeed() * dt, 0 });
-	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-}
-
-void RightPlayerState::OnEnter() 
-{
-	m_entity->SetDirShoot(true);
-	m_animation->SetMinMax(12, 19);
-}
-
-JumpPlayerState::JumpPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim)
-{
-}
-
-void JumpPlayerState::ProcessInput()
-{
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
-	{
-		SetNextState<JumpLeftPlayerState>(m_animation);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-	{
-		SetNextState<JumpRightPlayerState>(m_animation);
-	}
-	
 
 }
 
-void JumpPlayerState::Update(const float& dt)
+void JumpIdleBase::Update(const float& dt)
 {
+	PlayerState::Update(dt);
 	float y = std::max(m_entity->GetRectangle()->getPosition().y - m_entity->GetSpeed() * dt, m_entity->GetJumpHeight());
 	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
-
-	
-
 	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-	if (y == m_entity->GetJumpHeight())
-	{
-		SetNextState<DawnPlayerState>(m_animation);
-	}
 }
 
-void JumpPlayerState::OnEnter()
+void JumpIdleBase::ProcessInput()
 {
-	m_animation->SetMinMax(1, 10);
-}
-
-void JumpLeftPlayerState::ProcessInput() {
+	PlayerState::ProcessInput();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 	{
-		SetNextState<JumpRightPlayerState>(m_animation);
+		SetNextState<JumpRight>(m_animation);
 	}
-     if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
 	{
-		SetNextState<JumpPlayerState>(m_animation);
+		SetNextState<JumpLeft>(m_animation);
+
 	}
-	 if (m_entity->GetRectangle()->getPosition().y == m_entity->GetJumpHeight())
-	 {
-		 SetNextState<DawnLeftPlayerState>(m_animation);
-	 }
 }
 
-void JumpLeftPlayerState::Update(const float& dt)
+JumpIdleLeftState::JumpIdleLeftState(MyPlayer* owner, LoopAnimation* anim): JumpIdleBase(owner,anim)
+{}
+
+void JumpIdleLeftState::ProcessInput()
 {
+	JumpIdleBase::ProcessInput();
+	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetJumpHeight())
+	{
+		SetNextState<DownIdleLeftState>(m_animation);
+	}
+}
+
+void JumpIdleLeftState::OnEnter()
+{
+		
+}
+
+JumpIdleRightState::JumpIdleRightState(MyPlayer* owner, LoopAnimation* anim): JumpIdleBase(owner, anim)
+{}
+
+void JumpIdleRightState::ProcessInput()
+{
+	JumpIdleBase::ProcessInput();
+	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetJumpHeight())
+	{
+		SetNextState<DownIdleRightState>(m_animation);
+	}
+}
+
+void JumpIdleRightState::OnEnter()
+{
+
+}
+
+BaseJumpMoving::BaseJumpMoving(MyPlayer* owner, LoopAnimation* anim, float dirFactor): PlayerState(owner, anim), m_dirFactor(dirFactor)
+{
+
+}
+
+void BaseJumpMoving::Update(const float& dt)
+{
+	PlayerState::Update(dt);
 	float y = std::max(m_entity->GetRectangle()->getPosition().y - m_entity->GetSpeed() * dt, m_entity->GetJumpHeight());
 	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
-
-
-
-	m_entity->GetRectangle()->move({ -m_entity->GetSpeed() * dt, 0 });
+	m_entity->GetRectangle()->move({ m_dirFactor * m_entity->GetSpeed() * dt, 0 });
 	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-	
 }
 
-void JumpLeftPlayerState::OnEnter()
+JumpLeft::JumpLeft(MyPlayer* owner, LoopAnimation* anim): BaseJumpMoving(owner,anim,-1)
+{}
+
+void JumpLeft::ProcessInput()
 {
-	m_entity->SetDirShoot(false);
-	m_animation->SetMinMax(23, 31);
-}
-
-void JumpRightPlayerState::ProcessInput()
-{
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
-	{
-		SetNextState<JumpLeftPlayerState>(m_animation);
-	}
-	 if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-	{
-		SetNextState<JumpPlayerState>(m_animation);
-	}
-
-	 if (m_entity->GetRectangle()->getPosition().y == m_entity->GetJumpHeight())
-	 {
-		 SetNextState<DawnRightPlayerState>(m_animation);
-	 }
-
-}
-
-void JumpRightPlayerState::Update(const float& dt)
-{
-	
-	float y =  std::max(m_entity->GetRectangle()->getPosition().y - m_entity->GetSpeed() * dt, m_entity->GetJumpHeight());
-	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
-
-
-	m_entity->GetRectangle()->move({ m_entity->GetSpeed() * dt, 0 });
-	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-
-}
-
-void JumpRightPlayerState::OnEnter()
-{
-	m_entity->SetDirShoot(true);
-	m_animation->SetMinMax(12, 19);
-}
-
-
-// here 
-DawnPlayerState::DawnPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim)
-{
-}
-
-void DawnPlayerState::ProcessInput()
-{
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
-	{
-		SetNextState<DawnLeftPlayerState>(m_animation);
-	}
+	BaseJumpMoving::ProcessInput();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 	{
-		SetNextState<DawnRightPlayerState>(m_animation);
+		SetNextState<JumpRight>(m_animation);
 	}
-	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
 	{
-		SetNextState<IdlePlayerState>(m_animation);
+		SetNextState<JumpIdleLeftState>(m_animation);
 	}
-
-}
-
-void DawnPlayerState::Update(const float& dt)
-{
-	float y = std::min(m_entity->GetRectangle()->getPosition().y + m_entity->GetSpeed() * dt, m_entity->GetCapY());
-	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
-
-	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-}
-
-void DawnPlayerState::OnEnter()
-{
-	m_animation->SetMinMax(1, 10);
-}
-
-void DawnLeftPlayerState::ProcessInput() {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetJumpHeight())
 	{
-		SetNextState<DawnRightPlayerState>(m_animation);
-	}
-	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
-	{
-		SetNextState<DawnPlayerState>(m_animation);
-	}
-	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
-	{
-		SetNextState<LeftPlayerState>(m_animation);
+		SetNextState<DownLeft>(m_animation);
 	}
 }
 
-void DawnLeftPlayerState::Update(const float& dt)
+void JumpLeft::OnEnter()
 {
-	float y = std::min(m_entity->GetRectangle()->getPosition().y + m_entity->GetSpeed() * dt, m_entity->GetCapY());
-	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
-
-
-	m_entity->GetRectangle()->move({ -m_entity->GetSpeed() * dt, 0 });
-	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+		
 }
 
-void DawnLeftPlayerState::OnEnter()
-{
-	m_entity->SetDirShoot(false);
-	m_animation->SetMinMax(23, 31);
-}
+JumpRight::JumpRight(MyPlayer* owner, LoopAnimation* anim): BaseJumpMoving(owner, anim, 1)
+{}
 
-void DawnRightPlayerState::ProcessInput()
+void JumpRight::ProcessInput()
 {
+	BaseJumpMoving::ProcessInput();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
 	{
-		SetNextState<DawnLeftPlayerState>(m_animation);
+		SetNextState<JumpLeft>(m_animation);
 	}
-	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 	{
-		SetNextState<DawnPlayerState>(m_animation);
+		SetNextState<JumpIdleRightState>(m_animation);
+	}
+	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetJumpHeight())
+	{
+		SetNextState<DownRight>(m_animation);
+	}
+}
+
+void JumpRight::OnEnter()
+{
+
+}
+
+DownIdleBase::DownIdleBase(MyPlayer* owner, LoopAnimation* anim): PlayerState(owner, anim)
+{
+
+}
+
+void DownIdleBase::Update(const float& dt)
+{
+	PlayerState::Update(dt);
+	float y = std::min(m_entity->GetRectangle()->getPosition().y + m_entity->GetSpeed() * dt, m_entity->GetCapY());
+	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
+	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+}
+
+void DownIdleBase::ProcessInput()
+{
+	PlayerState::ProcessInput();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	{
+		SetNextState<DownRight>(m_animation);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+	{
+		SetNextState<DownLeft>(m_animation);
+	}
+}
+
+DownIdleLeftState::DownIdleLeftState(MyPlayer* owner, LoopAnimation* anim): DownIdleBase(owner, anim)
+{}
+
+void DownIdleLeftState::ProcessInput()
+{
+	DownIdleBase::ProcessInput();
+	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
+	{
+		SetNextState<LeftIdle>(m_animation);
+	}
+}
+
+void DownIdleLeftState::OnEnter()
+{
+
+}
+
+DownIdleRightState::DownIdleRightState(MyPlayer* owner, LoopAnimation* anim): DownIdleBase(owner, anim)
+{}
+
+void DownIdleRightState::ProcessInput()
+{
+	DownIdleBase::ProcessInput();
+	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
+	{
+		SetNextState<RightIdle>(m_animation);
+	}
+}
+
+void DownIdleRightState::OnEnter()
+{
+
+}
+
+BaseDownMoving::BaseDownMoving(MyPlayer* owner, LoopAnimation* anim, float dirFactor): PlayerState(owner, anim), m_dirFactor(dirFactor)
+{
+
+}
+
+void BaseDownMoving::Update(const float& dt)
+{
+	PlayerState::Update(dt);
+	float y = std::min(m_entity->GetRectangle()->getPosition().y + m_entity->GetSpeed() * dt, m_entity->GetCapY());
+	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
+	m_entity->GetRectangle()->move({ m_dirFactor * m_entity->GetSpeed() * dt, 0 });
+	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+}
+
+DownLeft::DownLeft(MyPlayer* owner, LoopAnimation* anim): BaseDownMoving(owner, anim, -1)
+{}
+
+void DownLeft::ProcessInput()
+{
+	BaseDownMoving::ProcessInput();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	{
+		SetNextState<DownRight>(m_animation);
+	}
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+	{
+		SetNextState<DownIdleLeftState>(m_animation);
 	}
 	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
 	{
-		SetNextState<RightPlayerState>(m_animation);
+		SetNextState<MovingLeft>(m_animation);
 	}
 }
 
-void DawnRightPlayerState::Update(const float& dt)
+void DownLeft::OnEnter()
 {
 
-	float y = std::min(m_entity->GetRectangle()->getPosition().y + m_entity->GetSpeed() * dt, m_entity->GetCapY());
-	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
-
-	m_entity->GetRectangle()->move({ m_entity->GetSpeed() * dt, 0 });
-	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-	
 }
 
-void DawnRightPlayerState::OnEnter()
+DownRight::DownRight(MyPlayer* owner, LoopAnimation* anim): BaseDownMoving(owner, anim, 1)
+{}
+
+void DownRight::ProcessInput()
 {
-	m_entity->SetDirShoot(true);
-	m_animation->SetMinMax(12, 19);
+	BaseDownMoving::ProcessInput();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+	{
+		SetNextState<DownLeft>(m_animation);
+	}
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	{
+		SetNextState<DownIdleRightState>(m_animation);
+	}
+	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
+	{
+		SetNextState<MovingRight>(m_animation);
+	}
 }
+
+void DownRight::OnEnter()
+{
+
+}
+
+//IdlePlayerState::IdlePlayerState(MyPlayer* owner, LoopAnimation* anim): PlayerState(owner, anim)
+//{}
+//
+//void IdlePlayerState::ProcessInput()
+//{
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<LeftPlayerState>(m_animation);
+//	}
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<RightPlayerState>(m_animation);
+//	}
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+//	{
+//		SetNextState<JumpPlayerState>(m_animation);
+//	}
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
+//		m_entity->Attack();
+//}
+//
+//void IdlePlayerState::Update(const float& dt)
+//{
+//	
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//}
+//
+//void IdlePlayerState::OnEnter()
+//{
+//	m_animation->SetMinMax(89, 94);
+//}
+//
+//void LeftPlayerState::ProcessInput() {
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<RightPlayerState>(m_animation);
+//	}
+//	 if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<IdlePlayerState>(m_animation);
+//	}
+//	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+//	 {
+//		 SetNextState<JumpLeftPlayerState>(m_animation);
+//	 }
+//}
+//
+//void LeftPlayerState::Update(const float& dt)
+//{
+//	m_entity->GetRectangle()->move({ -m_entity->GetSpeed() *dt, 0 });
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//}
+//
+//void LeftPlayerState:: OnEnter() 
+//{
+//	m_animation->SetMinMax(23, 31);
+//	m_entity->SetDirShoot(false);
+//}
+//
+//void RightPlayerState::ProcessInput() 
+//{
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<LeftPlayerState>(m_animation);
+//	}
+//	 if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<IdlePlayerState>(m_animation);
+//	}
+//	 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+//	 {
+//		 SetNextState<JumpRightPlayerState>(m_animation);
+//	 }
+//}
+//
+//void RightPlayerState::Update(const float& dt) 
+//{
+//	m_entity->GetRectangle()->move({ m_entity->GetSpeed() * dt, 0 });
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//}
+//
+//void RightPlayerState::OnEnter() 
+//{
+//	m_entity->SetDirShoot(true);
+//	m_animation->SetMinMax(12, 19);
+//}
+//
+//JumpPlayerState::JumpPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim)
+//{
+//}
+//
+//void JumpPlayerState::ProcessInput()
+//{
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<JumpLeftPlayerState>(m_animation);
+//	}
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<JumpRightPlayerState>(m_animation);
+//	}
+//	
+//
+//}
+//
+//void JumpPlayerState::Update(const float& dt)
+//{
+//	float y = std::max(m_entity->GetRectangle()->getPosition().y - m_entity->GetSpeed() * dt, m_entity->GetJumpHeight());
+//	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
+//
+//	
+//
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//	if (y == m_entity->GetJumpHeight())
+//	{
+//		SetNextState<DawnPlayerState>(m_animation);
+//	}
+//}
+//
+//void JumpPlayerState::OnEnter()
+//{
+//	m_animation->SetMinMax(1, 10);
+//}
+//
+//void JumpLeftPlayerState::ProcessInput() {
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<JumpRightPlayerState>(m_animation);
+//	}
+//     if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<JumpPlayerState>(m_animation);
+//	}
+//	 if (m_entity->GetRectangle()->getPosition().y == m_entity->GetJumpHeight())
+//	 {
+//		 SetNextState<DawnLeftPlayerState>(m_animation);
+//	 }
+//}
+//
+//void JumpLeftPlayerState::Update(const float& dt)
+//{
+//	float y = std::max(m_entity->GetRectangle()->getPosition().y - m_entity->GetSpeed() * dt, m_entity->GetJumpHeight());
+//	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
+//
+//
+//
+//	m_entity->GetRectangle()->move({ -m_entity->GetSpeed() * dt, 0 });
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//	
+//}
+//
+//void JumpLeftPlayerState::OnEnter()
+//{
+//	m_entity->SetDirShoot(false);
+//	m_animation->SetMinMax(23, 31);
+//}
+//
+//void JumpRightPlayerState::ProcessInput()
+//{
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<JumpLeftPlayerState>(m_animation);
+//	}
+//	 if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<JumpPlayerState>(m_animation);
+//	}
+//
+//	 if (m_entity->GetRectangle()->getPosition().y == m_entity->GetJumpHeight())
+//	 {
+//		 SetNextState<DawnRightPlayerState>(m_animation);
+//	 }
+//
+//}
+//
+//void JumpRightPlayerState::Update(const float& dt)
+//{
+//	
+//	float y =  std::max(m_entity->GetRectangle()->getPosition().y - m_entity->GetSpeed() * dt, m_entity->GetJumpHeight());
+//	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
+//
+//
+//	m_entity->GetRectangle()->move({ m_entity->GetSpeed() * dt, 0 });
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//
+//}
+//
+//void JumpRightPlayerState::OnEnter()
+//{
+//	m_entity->SetDirShoot(true);
+//	m_animation->SetMinMax(12, 19);
+//}
+//
+//
+//// here 
+//DawnPlayerState::DawnPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim)
+//{
+//}
+//
+//void DawnPlayerState::ProcessInput()
+//{
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<DawnLeftPlayerState>(m_animation);
+//	}
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<DawnRightPlayerState>(m_animation);
+//	}
+//	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
+//	{
+//		SetNextState<IdlePlayerState>(m_animation);
+//	}
+//
+//}
+//
+//void DawnPlayerState::Update(const float& dt)
+//{
+//	float y = std::min(m_entity->GetRectangle()->getPosition().y + m_entity->GetSpeed() * dt, m_entity->GetCapY());
+//	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
+//
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//}
+//
+//void DawnPlayerState::OnEnter()
+//{
+//	m_animation->SetMinMax(1, 10);
+//}
+//
+//void DawnLeftPlayerState::ProcessInput() {
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<DawnRightPlayerState>(m_animation);
+//	}
+//	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<DawnPlayerState>(m_animation);
+//	}
+//	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
+//	{
+//		SetNextState<LeftPlayerState>(m_animation);
+//	}
+//}
+//
+//void DawnLeftPlayerState::Update(const float& dt)
+//{
+//	float y = std::min(m_entity->GetRectangle()->getPosition().y + m_entity->GetSpeed() * dt, m_entity->GetCapY());
+//	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
+//
+//
+//	m_entity->GetRectangle()->move({ -m_entity->GetSpeed() * dt, 0 });
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//}
+//
+//void DawnLeftPlayerState::OnEnter()
+//{
+//	m_entity->SetDirShoot(false);
+//	m_animation->SetMinMax(23, 31);
+//}
+//
+//void DawnRightPlayerState::ProcessInput()
+//{
+//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+//	{
+//		SetNextState<DawnLeftPlayerState>(m_animation);
+//	}
+//	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+//	{
+//		SetNextState<DawnPlayerState>(m_animation);
+//	}
+//	if (m_entity->GetRectangle()->getPosition().y == m_entity->GetCapY())
+//	{
+//		SetNextState<RightPlayerState>(m_animation);
+//	}
+//}
+//
+//void DawnRightPlayerState::Update(const float& dt)
+//{
+//
+//	float y = std::min(m_entity->GetRectangle()->getPosition().y + m_entity->GetSpeed() * dt, m_entity->GetCapY());
+//	m_entity->GetRectangle()->setPosition({ m_entity->GetRectangle()->getPosition().x, y });
+//
+//	m_entity->GetRectangle()->move({ m_entity->GetSpeed() * dt, 0 });
+//	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+//	
+//}
+//
+//void DawnRightPlayerState::OnEnter()
+//{
+//	m_entity->SetDirShoot(true);
+//	m_animation->SetMinMax(12, 19);
+//}

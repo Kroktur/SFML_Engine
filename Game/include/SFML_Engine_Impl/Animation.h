@@ -36,6 +36,7 @@ public:
 	void SetTexture(sf::Sprite* sprite) const;
 	void UpdateShapeFrame(sf::Shape* shape);
 	void UpdateSpriteFrame(sf::Sprite* sprite);
+	AnimationManager* GetAnimationManager() const;
 protected:
 	virtual sf::IntRect GetRect() = 0;
 	AnimationManager* m_manager;

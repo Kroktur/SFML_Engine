@@ -11,3 +11,11 @@ void Wall::OnInit()
 	GetRectangle()->setSize({ m_size.x,m_size.y });
 	//DisableMainRender();
 }
+
+WallToBlock::WallToBlock(BaseComposite* parent, const KT::Vector2F& position, const KT::Vector2F& size) : Wall(parent, position, size)
+{
+}
+
+WallToDestroy::WallToDestroy(BaseComposite* parent, const KT::Vector2F& position, const KT::Vector2F& size) : Wall(parent, position, size)
+{
+}

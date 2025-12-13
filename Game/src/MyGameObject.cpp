@@ -20,7 +20,6 @@ void Rect::Input(const std::optional<sf::Event>& event)
 {
 }
 
-void Rect::Update(float deltatime)
 MyGameObject::MyGameObject(BaseComposite* parent) : CollidableRectangleComposite(parent)
 {
 }

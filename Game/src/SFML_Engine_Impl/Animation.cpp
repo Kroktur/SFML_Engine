@@ -92,6 +92,11 @@ void IAnimation::UpdateSpriteFrame(sf::Sprite* sprite)
 	sprite->setTextureRect(GetRect());
 }
 
+AnimationManager* IAnimation::GetAnimationManager() const
+{
+	return m_manager;
+}
+
 LoopAnimation::LoopAnimation(AnimationManager* manager, size_t start, size_t end, const KT::Chrono<float>::Time& point): IAnimation(manager,start,end,point)
 {}
 

@@ -22,10 +22,10 @@ class Bullet : public CollidableRectangleComposite {
 		KT::StateMachine<Bullet>* m_bulletStateMachine;
 	};
 
-class BulletState : public KT::IState<Bullet>
+class BusinessBulletState : public KT::IState<Bullet>
 {
 public:
-	BulletState(Bullet* owner, LoopAnimation* anim) : KT::IState<Bullet>(owner), m_animation(anim) {}
+	BusinessBulletState(Bullet* owner, LoopAnimation* anim) : KT::IState<Bullet>(owner), m_animation(anim) {}
 	void ProcessInput() override {}
 	void Update(const float& dt) override {}
 	void Render(const float& alpha) override {}
@@ -38,17 +38,17 @@ protected:
 
 };
 
-class BulletMoveState : public BulletState
+class BulletMoveState : public BusinessBulletState
 {
 public:
-	BulletMoveState(Bullet* owner, LoopAnimation* anim) : BulletState(owner, anim) {}
+	BulletMoveState(Bullet* owner, LoopAnimation* anim) : BusinessBulletState(owner, anim) {}
 	void Update(const float& dt) override;
 };
 
-class BulletDyingState : public BulletState
+class BulletDyingState : public BusinessBulletState
 {
 public:
-	BulletDyingState(Bullet* owner, LoopAnimation* anim) : BulletState(owner, anim) {}
+	BulletDyingState(Bullet* owner, LoopAnimation* anim) : BusinessBulletState(owner, anim) {}
 	void Update(const float& dt) override;
 private:
 	KT::Chrono<float> m_lifeTime;

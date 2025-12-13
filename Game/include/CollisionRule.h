@@ -6,6 +6,7 @@
 #include "Core/CollisionSolver.h"
 #include "MyPlayer.h"
 #include "BulletPlayer.h"
+#include "Wall.h"
 
 using solver = KT::SolverResult<float, 2, KT::Vector2>;
 
@@ -20,4 +21,10 @@ namespace Rule
 	 void Collide(BusinessMan& c, Bullet& c2, solver);
 	 void Collide(Rect& c, Bullet& c2, solver);
 	 void Collide(Bullet& c, Bullet& c2, solver);
+
+
+
+	 void Collide(MyPlayer&, WallToBlock&, solver);
+	 void Collide(BulletPlayer&, WallToBlock&, solver);
+	 void Collide(BulletPlayer&, WallToDestroy&, solver);
 }

@@ -137,7 +137,7 @@ namespace KT
 			type dist = distanceBetwenCenter.At(i);
 			type totalHalf = totalHalfSize.At(i);
 			type overlap = totalHalf - std::abs(dist);
-			if (overlap <= 0)
+			if (overlap < 0)
 				throw std::out_of_range("should not pass here");
 			if (overlap < minOverlap)
 			{

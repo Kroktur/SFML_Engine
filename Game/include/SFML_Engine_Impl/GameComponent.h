@@ -159,6 +159,19 @@ public:
 	{
 		m_localOBBs.push_back(obb);
 	}
+	void DisableOBB(size_t index)
+	{
+		int i = 0;
+		for (auto it = m_localOBBs.begin(); it != m_localOBBs.end(); ++it)
+		{
+			if (i == static_cast<int>(index))
+			{
+				m_localOBBs.erase(it);
+				return;
+			}
+			++i;
+		}
+	}
 	size_t getNumberOfOBB() const
 	{
 		return m_localOBBs.size();

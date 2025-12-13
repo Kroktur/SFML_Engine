@@ -15,19 +15,16 @@ public:
 	float GetSpeed() const;
 	float GetJumpHeight() const;
 	void Update(float deltatime) override;
-	void SetDirShoot(bool shootRight);
 	void Render(float alpha) override;
 
 	void Input(const std::optional<sf::Event>& event) override;
-	void Attack();
+	void Attack(bool);
 private:
 	float m_capY;
 	KT::StateMachine<MyPlayer>* m_playerStateMachine;
 	AnimationManager* m_manager;
 	LoopAnimation* m_animation;
-	KT::Chrono<float> m_attackCooldown;
-	bool isShootingRight;
-};
+	KT::Chrono<float> m_attackCooldown;};
 
 class PlayerState : public KT::IState<MyPlayer>
 {
@@ -42,122 +39,194 @@ protected:
 	LoopAnimation* m_animation;
 };
 
-class IdlePlayerState : public PlayerState
+class IdleBaseState : public PlayerState
 {
 public:
-	IdlePlayerState(MyPlayer* owner, LoopAnimation* anim);
-
-	void ProcessInput() override;
+	IdleBaseState(MyPlayer* owner, LoopAnimation* anim);
 
 	void Update(const float& dt) override;
 
-	void OnEnter() override;
-private : 
-
+	void ProcessInput() override;
 };
 
-class LeftPlayerState : public PlayerState
+class LeftIdle : public IdleBaseState
 {
 public:
-	LeftPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim) {};
+	LeftIdle(MyPlayer* owner, LoopAnimation* anim);
 
 	void ProcessInput() override;
 
-	void Update(const float& dt) override;
+	void OnEnter() override;
+};
+class RightIdle : public IdleBaseState
+{
+public:
+	RightIdle(MyPlayer* owner, LoopAnimation* anim);
+
+	void ProcessInput() override;
 
 	void OnEnter() override;
-
 };
 
-class RightPlayerState : public PlayerState
+class MovingBase : public PlayerState
 {
 public:
-	RightPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim) {};
-
-	void ProcessInput() override;
+	MovingBase(MyPlayer* owner, LoopAnimation* anim,float dirFactor);
 
 	void Update(const float& dt) override;
 
-	void OnEnter() override;
-
+protected:
+	float m_dirFactor;
 };
 
-class JumpPlayerState : public PlayerState
+class MovingLeft : public  MovingBase
 {
 public:
-	JumpPlayerState(MyPlayer* owner, LoopAnimation* anim);
-
-	void ProcessInput() override;
-
-	void Update(const float& dt) override;
+	MovingLeft(MyPlayer* owner, LoopAnimation* anim);
 
 	void OnEnter() override;
-private:
 
+	void ProcessInput() override;
 };
 
-class JumpLeftPlayerState : public PlayerState
+class MovingRight : public  MovingBase
 {
 public:
-	JumpLeftPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim) {};
-
-	void ProcessInput() override;
-
-	void Update(const float& dt) override;
+	MovingRight(MyPlayer* owner, LoopAnimation* anim);
 
 	void OnEnter() override;
 
+	void ProcessInput() override;
 };
 
-class JumpRightPlayerState : public PlayerState
+
+class JumpIdleBase : public PlayerState
 {
 public:
-	JumpRightPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim) {};
-
-	void ProcessInput() override;
+	JumpIdleBase(MyPlayer* owner, LoopAnimation* anim);
 
 	void Update(const float& dt) override;
 
-	void OnEnter() override;
-
+	void ProcessInput() override;
 };
 
-class DawnPlayerState : public PlayerState
+class JumpIdleLeftState : public JumpIdleBase
 {
 public:
-	DawnPlayerState(MyPlayer* owner, LoopAnimation* anim);
+	JumpIdleLeftState(MyPlayer* owner, LoopAnimation* anim);
 
 	void ProcessInput() override;
 
-	void Update(const float& dt) override;
-
 	void OnEnter() override;
-private:
-
 };
 
-class DawnLeftPlayerState : public PlayerState
+class JumpIdleRightState : public JumpIdleBase
 {
 public:
-	DawnLeftPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim) {};
+	JumpIdleRightState(MyPlayer* owner, LoopAnimation* anim);
 
 	void ProcessInput() override;
 
-	void Update(const float& dt) override;
-
 	void OnEnter() override;
-
 };
 
-class DawnRightPlayerState : public PlayerState
+class BaseJumpMoving : public PlayerState
 {
 public:
-	DawnRightPlayerState(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim) {};
-
-	void ProcessInput() override;
+	BaseJumpMoving(MyPlayer* owner, LoopAnimation* anim, float dirFactor);
 
 	void Update(const float& dt) override;
 
-	void OnEnter() override;
+protected:
+	float m_dirFactor;
+};
 
+class JumpLeft : public BaseJumpMoving
+{
+public:
+	JumpLeft(MyPlayer* owner, LoopAnimation* anim);
+
+	void ProcessInput() override;
+
+	void OnEnter() override;
+};
+
+class JumpRight : public BaseJumpMoving
+{
+public:
+	JumpRight(MyPlayer* owner, LoopAnimation* anim);
+
+	void ProcessInput() override;
+
+	void OnEnter() override;
+};
+
+
+/// code here
+///
+///
+///
+///
+///
+///
+class DownIdleBase : public PlayerState
+{
+public:
+	DownIdleBase(MyPlayer* owner, LoopAnimation* anim);
+
+	void Update(const float& dt) override;
+
+	void ProcessInput() override;
+};
+
+class DownIdleLeftState : public DownIdleBase
+{
+public:
+	DownIdleLeftState(MyPlayer* owner, LoopAnimation* anim);
+
+	void ProcessInput() override;
+
+	void OnEnter() override;
+};
+
+class DownIdleRightState : public DownIdleBase
+{
+public:
+	DownIdleRightState(MyPlayer* owner, LoopAnimation* anim);
+
+	void ProcessInput() override;
+
+	void OnEnter() override;
+};
+
+
+class BaseDownMoving : public PlayerState
+{
+public:
+	BaseDownMoving(MyPlayer* owner, LoopAnimation* anim, float dirFactor);
+
+	void Update(const float& dt) override;
+
+protected:
+	float m_dirFactor;
+};
+
+class DownLeft : public BaseDownMoving
+{
+public:
+	DownLeft(MyPlayer* owner, LoopAnimation* anim);
+
+	void ProcessInput() override;
+
+	void OnEnter() override;
+};
+
+class DownRight : public BaseDownMoving
+{
+public:
+	DownRight(MyPlayer* owner, LoopAnimation* anim);
+
+	void ProcessInput() override;
+
+	void OnEnter() override;
 };

@@ -24,7 +24,8 @@ public:
 	void Render(const float& alpha) override;
 	void Destroy() override;
 	MyPlayer* GetPlayer() const;
-
+	BaseComposite* GetLayer1() const;
+	BaseComposite* GetLayer2() const;
 private:
 	void MyInit();
 	void MyUpdate(const float& deltatime);
@@ -34,4 +35,6 @@ private:
 	KT::FNDispatcher<IGameObject, IGameObject, void, KT::typelist<solver>> m_dispatcher;
 	std::optional<bool> m_debugMode;
 	MyPlayer* m_player;
+	BaseComposite* m_layer1;
+	BaseComposite* m_layer2;
 };

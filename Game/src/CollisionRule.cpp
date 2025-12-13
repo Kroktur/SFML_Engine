@@ -14,6 +14,22 @@ void Rule::Collide(Bullet& c, Bullet& c2, solver)
 {
 
 }
+
+void Rule::Collide(MyPlayer& p, WallToBlock& w , solver t)
+{
+	p.GetRectangle()->move({ t.mvt.x,t.mvt.y });
+}
+
+void Rule::Collide(BulletPlayer&, WallToBlock&, solver)
+{
+
+}
+
+void Rule::Collide(BulletPlayer& bp, WallToDestroy&, solver)
+{
+	bp.EnableDeath();
+}
+
 void Rule::Collide(MyPlayer& c, BulletPlayer& c2, solver)
 {
 }
