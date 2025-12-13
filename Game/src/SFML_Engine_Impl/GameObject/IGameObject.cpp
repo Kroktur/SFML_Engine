@@ -28,3 +28,8 @@ void IGameObject::PrivUpdate(float deltatime)
 void IGameObject::PrivRender(float alpha)
 {
 }
+
+ISFMLScene* IGameObject::GetScene() const
+{
+	return m_scene;
+}

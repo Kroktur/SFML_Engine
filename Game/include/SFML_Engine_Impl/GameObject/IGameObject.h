@@ -31,6 +31,7 @@ public:
 	virtual void Render(float alpha);
 	virtual void PrivUpdate(float deltatime);
 	virtual void PrivRender(float alpha);
+	ISFMLScene* GetScene() const;
 protected:
 	// pointer to the Scene
 	ISFMLScene* m_scene;
