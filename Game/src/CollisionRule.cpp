@@ -8,7 +8,8 @@ void Rule::Collide(MyClassCircle& c, Enemy& c2, solver)
 
 void Rule::Collide(Enemy& c2, MyClassRect& c, solver)
 {
-	c2.EnableDeath();
+	c2.MoveRight();
+	
 }
 
 

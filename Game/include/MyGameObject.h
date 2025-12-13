@@ -15,10 +15,16 @@ public:
 
 	void OnDestroy() override;
 
+	void MoveRight();
+
 	AnimationManager* m_manager;
 	LoopAnimation* m_animation;
 
+	void SetAnimationForDirection(bool right);
+
+
 private:
+	bool movingRight;
 	bool ZQSD[4];
 };
 

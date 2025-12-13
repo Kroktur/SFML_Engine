@@ -5,6 +5,7 @@ Enemy::Enemy(BaseComposite* parent): CollidableRectangleComposite(parent)
 
 void Enemy::OnInit()
 {
+	movingRight = false;
 	m_manager = new AnimationManager{ "SpriteSheet_Nova.png", KT::Vector2UI(528, 624), KT::Vector2UI(0, 0), KT::Vector2UI(11, 13) };
 	m_animation = new LoopAnimation{ m_manager,23,31,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1) };
 	m_animation->SetTexture(GetRectangle());
@@ -17,9 +18,23 @@ void Enemy::OnInit()
 
 void Enemy::Update(float deltatime)
 {
+	
 	m_animation->UpdateShapeFrame(GetRectangle());
 	auto rect = GetRectangle();
-	rect->move({ -150* deltatime,0 });
+	
+	
+	if (movingRight)
+	{
+		rect->move({ 150 * deltatime,0 });
+		SetAnimationForDirection(movingRight);
+
+		
+	}
+	else
+		rect->move({ -150 * deltatime,0 });
+	    SetAnimationForDirection(movingRight);
+	
+
 	
 
 
@@ -55,4 +70,22 @@ void Enemy::OnDestroy()
 {
 	delete m_manager;
 	delete m_animation;
+}
+
+void Enemy::MoveRight()
+{
+	movingRight = true;
+	SetAnimationForDirection(true);
+}
+
+void Enemy::SetAnimationForDirection(bool right)
+{
+	if (right)
+	{
+		m_animation->SetMinMax(12, 19);
+	}
+	else
+	{
+		m_animation->SetMinMax(23, 31);
+	}
 }
