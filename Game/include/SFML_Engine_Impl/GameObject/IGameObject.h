@@ -29,6 +29,8 @@ public:
 	virtual void Input(const std::optional<sf::Event>& event);
 	// render your item IMPORTANT automatic if you do not instantiate a new shape or text 
 	virtual void Render(float alpha);
+	virtual void PrivUpdate(float deltatime);
+	virtual void PrivRender(float alpha);
 protected:
 	// pointer to the Scene
 	ISFMLScene* m_scene;

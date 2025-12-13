@@ -128,7 +128,6 @@ public:
 
 			obb.axes[i].x = transformedAxe.x;
 			obb.axes[i].y = transformedAxe.y;
-			obb.axes[i].SelfNormalize();
 		}
 	}
 

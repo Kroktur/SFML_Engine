@@ -80,7 +80,7 @@ bool BaseRendererLGO::IsBoxActiveRender() const
 	return m_component->IsRenderable(1);
 }
 
-void BaseRendererLGO::Render(float alpha)
+void BaseRendererLGO::PrivRender(float alpha)
 {
 	auto render = GetComponent<GraphicComponent<IGameObject>>();
 	auto& window = m_scene->GetWindow();
@@ -111,7 +111,7 @@ void RectangleRLGO::SetBoxColor(sf::Color color) const
 		(*m_array)[i].color = color;
 }
 
-void RectangleRLGO::Update(float deltatime)
+void RectangleRLGO::PrivUpdate(float deltatime)
 {
 
 	if (IsBoxActiveRender())
@@ -142,10 +142,10 @@ CollidableRectangleRLGO::CollidableRectangleRLGO(ISFMLScene* scene): RectangleRL
 
 
 
-void CollidableRectangleRLGO::Update(float deltatime)
+void CollidableRectangleRLGO::PrivUpdate(float deltatime)
 {
 	m_component->SetOBB( 0,Mapper2DRectangle::GetOrCreateOBB({ GetRectangle()->getSize().x,GetRectangle()->getSize().y },GetRectangle()));
-	RectangleRLGO::Update(deltatime);
+	RectangleRLGO::PrivUpdate(deltatime);
 }
 
 TextRLGO::TextRLGO(ISFMLScene* scene, const sf::Font& font):BaseRendererLGO(scene), m_text(std::make_unique<sf::Text>(font)), m_array(std::make_unique<sf::VertexArray>(sf::PrimitiveType::LineStrip, line_size))
@@ -173,7 +173,7 @@ void TextRLGO::SetBoxColor(sf::Color color) const
 		(*m_array)[i].color = color;
 }
 
-void TextRLGO::Update(float deltatime)
+void TextRLGO::PrivUpdate(float deltatime)
 {
 
 	if (IsBoxActiveRender())
@@ -222,7 +222,7 @@ void CircleRLGO::SetBoxColor(sf::Color color) const
 		(*m_array)[i].color = color;
 }
 
-void CircleRLGO::Update(float deltaTime)
+void CircleRLGO::PrivUpdate(float deltaTime)
 {
 
 	if (IsBoxActiveRender())
@@ -251,8 +251,8 @@ CollidableCircleRLGO::CollidableCircleRLGO(ISFMLScene* scene): CircleRLGO(scene)
 	m_component->AddOBB();
 }
 
-void CollidableCircleRLGO::Update(float deltatime)
+void CollidableCircleRLGO::PrivUpdate(float deltatime)
 {
 	m_component->SetOBB(0,Mapper2DCircle::GetOrCreateOBB(GetCirle()->getRadius(), GetCirle())); 
-	CircleRLGO::Update(deltatime);
+	CircleRLGO::PrivUpdate(deltatime);
 }

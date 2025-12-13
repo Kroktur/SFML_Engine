@@ -2,6 +2,7 @@
 #include "MyGameObject.h"
 #include "SFML_Engine_Impl/PhysicSolver.h"
 #include "CollisionRule.h"
+#include "MyPlayer.h"
 
 GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime)
 {}
@@ -12,14 +13,14 @@ void GameScene::MyInit()
 {
 	auto* root = static_cast<SFMLRoot<GameScene>*>(this);
 	//First of All Init Dispatcher
-	m_dispatcher.Add< RandomSquare, Player, Rule::Collide, true>();
+
+	//m_dispatcher.Add< RandomSquare, Player, Rule::Collide, true>();
 
 	TextureLoader::Load("SpriteSheet_Nova.png", {}, {});
 	
 	// create start Object here
 	/*new CollidableRectangleRLGO(root);*/
-	auto* player = new Player(root);
-	new RandomSquare(root);
+	new MyPlayer(root, 800.0f);
 
 }
 

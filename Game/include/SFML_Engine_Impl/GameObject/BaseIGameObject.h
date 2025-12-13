@@ -73,7 +73,7 @@ public:
 	// Red by default
 	virtual void SetBoxColor(sf::Color color) const = 0;
 	// this is where the render is automatic so if you use a child class or struct be sure to call BaseRendererLGO::Render(alpha)
-	void Render(float alpha) override;
+	void PrivRender(float alpha) override;
 protected:
 	// its automatic (if you use child) don't touch if not call it to add a new item to render or override render
 	void AddDrawable(sf::Drawable* drawable, bool active = true);
@@ -92,7 +92,7 @@ public:
 	KT::AABB2DF LocalBox() const override;
 	void SetBoxColor(sf::Color color) const override;
 	// IMPORTANT automatic logic for box if you want debug tool YOU MUST CALL THIS implementation like that : RectangleRLGO::Update(deltatime) in child class 
-	void Update(float deltatime) override;
+	void PrivUpdate(float deltatime) override;
 private:
 	// basic Rectangle
 	std::unique_ptr<sf::RectangleShape> m_rect;
@@ -106,7 +106,7 @@ class CollidableRectangleRLGO : public RectangleRLGO
 public:
 	CollidableRectangleRLGO(ISFMLScene* scene);
 	// IMPORTANT automatic logic for collision if you want debug tool YOU MUST CALL THIS implementation like that : CollidableRectangleRLGO::Update(deltatime) in child class 
-	void Update(float deltatime) override;
+	void PrivUpdate(float deltatime) override;
 private:
 	CollisionComponent<IGameObject>* m_component;
 };
@@ -125,7 +125,7 @@ public:
 	KT::AABB2DF LocalBox() const override;
 	void SetBoxColor(sf::Color color)  const override;
 	// IMPORTANT automatic logic for box if you want debug tool YOU MUST CALL THIS implementation like that : TextRLGO::Update(deltatime) in child class 
-	void Update(float deltatime) override;
+	void PrivUpdate(float deltatime) override;
 private:
 	// basic text
 	std::unique_ptr<sf::Text> m_text;
@@ -147,7 +147,7 @@ public:
 	KT::AABB2DF LocalBox() const override;
 	void SetBoxColor(sf::Color color) const override;
 	// IMPORTANT automatic logic for box if you want debug tool YOU MUST CALL THIS implementation like that : CircleRLGO::Update(deltatime) in child class 
-	void Update(float deltaTime) override;
+	void PrivUpdate(float deltaTime) override;
 private:
 	// basic Circle
 	std::unique_ptr<sf::CircleShape> m_circle;
@@ -162,7 +162,7 @@ class CollidableCircleRLGO : public CircleRLGO
 public:
 	CollidableCircleRLGO(ISFMLScene* scene);
 	// IMPORTANT automatic logic for collision if you want debug tool YOU MUST CALL THIS implementation like that : CollidableCircleRLGO::Update(deltatime) in child class 
-	void Update(float deltatime) override;
+	void PrivUpdate(float deltatime) override;
 
 private:
 	CollisionComponent<IGameObject>* m_component;

@@ -30,4 +30,5 @@ private:
 	void MyRender(const float& alpha) ;
 	void MyDestroy();
 	KT::FNDispatcher<IGameObject, IGameObject, void, KT::typelist<solver>> m_dispatcher;
+	std::optional<bool> m_debugMode;
 };

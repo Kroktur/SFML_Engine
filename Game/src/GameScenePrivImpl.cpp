@@ -27,6 +27,7 @@ void GameScene::Update(const float& deltatime)
 			auto go = component->AsBase();
 			if (!go)
 				return;
+
 			if (!go->HasComponent<LivingComponent<IGameObject>>())
 				return;
 			auto life = go->GetComponent<LivingComponent<IGameObject>>();
@@ -50,6 +51,17 @@ void GameScene::Update(const float& deltatime)
 		{
 			auto* go = component->AsBase();
 			go->Update(deltatime);
+			go->PrivUpdate(deltatime);
+			if (go->HasComponent<GraphicComponent<IGameObject>>())
+			{
+				if (m_debugMode.has_value())
+				{
+					if (m_debugMode.value() == true)
+						go->GetComponent<GraphicComponent<IGameObject>>()->EnableRender(1);
+					else
+						go->GetComponent<GraphicComponent<IGameObject>>()->DisableRender(1);
+				}
+			}
 			if (!go->HasComponent<CollisionComponent<IGameObject>>())
 				return;
 			auto box = go->GetComponent<CollisionComponent<IGameObject>>()->GetGlobalOBBs();
@@ -73,7 +85,17 @@ void GameScene::ProcessInput()
 	{
 		if (event->is<sf::Event::Closed>())
 			GetWindow().close();
-		// here for switch scene 
+		// here for switch scene
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B))
+		{
+
+			if (!m_debugMode.has_value())
+				m_debugMode = true;
+			else if (m_debugMode.value() == false)
+				m_debugMode = true;
+			else
+				m_debugMode = false;
+		}
 	}
 
 	//INPUT HERE
@@ -85,6 +107,7 @@ void GameScene::ProcessInput()
 	root->ExecuteAction([&](IGameObject* go)
 		{
 			go->Input(GetWindow().pollEvent());
+			
 		});
 }
 
@@ -99,6 +122,7 @@ void GameScene::Render(const float& alpha)
 	root->ExecuteAction([&](IGameObject* go)
 		{
 			go->Render(alpha);
+			go->PrivRender(alpha);
 		});
 }
 

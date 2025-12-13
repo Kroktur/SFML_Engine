@@ -20,3 +20,11 @@ void IGameObject::Input(const std::optional<sf::Event>& event)
 
 void IGameObject::Render(float alpha)
 {}
+
+void IGameObject::PrivUpdate(float deltatime)
+{
+}
+
+void IGameObject::PrivRender(float alpha)
+{
+}
