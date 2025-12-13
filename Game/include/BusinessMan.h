@@ -22,9 +22,12 @@ public:
 
 	void Input(const std::optional<sf::Event>& event) override;
 	GameScene* GetMyScene() const;
+	void MoveBack();
 
 private:
 	float m_capY;
+	int vie = 3;
+	bool movedBack = false;
 	KT::StateMachine<BusinessMan>* m_playerStateMachine;
 	AnimationManager* m_manager;
 	LoopAnimation* m_animation;

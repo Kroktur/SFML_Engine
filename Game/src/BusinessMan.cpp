@@ -36,20 +36,35 @@ void BusinessMan::Update(float deltatime)
 	m_playerStateMachine->Update(deltatime);
 	if (m_coolDown.GetElapsedTime().AsSeconds() > 0.5f)
 	{
-
 		auto player = GetMyScene()->GetPlayer();
 		auto PlayerPos = player->GetRectangle()->getPosition();
 
 		auto BusinessPos = GetRectangle()->getPosition();
-
 		bool IsRight = PlayerPos.x > BusinessPos.x;
 
-		auto bullet = new Bullet(this, { GetRectangle()->getPosition().x , GetRectangle()->getPosition().y}, IsRight);
-		bullet->OnInit();
-		m_coolDown.Reset();
+		if (movedBack)
+			GetRectangle()->move({ 200 * deltatime, 0 });
+		else
+		{
+			GetRectangle()->move({ -200 * deltatime, 0 });
+			auto bullet = new Bullet(this, { GetRectangle()->getPosition().x , GetRectangle()->getPosition().y }, IsRight);
+			bullet->OnInit();
+			m_coolDown.Reset();
+		}
+
 	}
 
 }
+void BusinessMan::MoveBack()
+{
+	--vie;
+	if (vie == 0)
+	{
+		movedBack = true;
+		GetRectangle()->setFillColor(sf::Color::Green);
+	}
+}
+
 
 void BusinessMan::Render(float alpha)
 {
@@ -63,8 +78,8 @@ void BusinessMan::Input(const std::optional<sf::Event>& event)
 
 GameScene* BusinessMan::GetMyScene() const
 {
-		return dynamic_cast<GameScene*>(GetScene());
-	
+	return dynamic_cast<GameScene*>(m_scene);
+
 }
 
 BusinessManState::BusinessManState(BusinessMan* owner, LoopAnimation* anim) : KT::IState<BusinessMan>(owner), m_animation(anim)
