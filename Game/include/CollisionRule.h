@@ -8,6 +8,4 @@ using solver = KT::SolverResult<float, 2, KT::Vector2>;
 namespace Rule
 {
 	 void Collide(RandomSquare& c, Player& c2, solver);
-	 void Collide(Player& c2, MyCircle& c, solver);
-
 }

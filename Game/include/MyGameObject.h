@@ -34,30 +34,13 @@ private:
 	bool jump = false;
 	bool movingUp = false;
 	bool movingDown = false;
+	bool shooting = false;
 };
 
-class MyCircle : public CollidableCircleComposite {
+class Bullet : public CollidableRectangleComposite
+{
 public:
-	MyCircle(BaseComposite* parent) : CollidableCircleComposite(parent) {}
-	void OnInit() override
-	{
-		GetCirle()->setRadius({ 50 });
-		GetCirle()->setFillColor(sf::Color::Red);
-		GetCirle()->setPosition({ 800,800 });
-	}// implement this for initiation
-	void OnDestroy() override
-	{
-
-	}// implement this for destroy
-	void Update(float deltatime) override
-	{
-		CollidableCircleComposite::Update(deltatime);
-		GetCirle()->setFillColor(sf::Color::Red);
-
-	}
-	void Render(float alpha) override
-	{
-		CollidableCircleComposite::Render(alpha);
-
-	}
+	Bullet(BaseComposite* parent);
+	void OnInit() override;
+	void Update(float deltatime) override;
 };

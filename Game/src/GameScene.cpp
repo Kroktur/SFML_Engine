@@ -14,15 +14,14 @@ void GameScene::MyInit()
 
 	//First of All Init Dispatcher
 	m_dispatcher.Add< RandomSquare, Player, Rule::Collide, true>();
-	m_dispatcher.Add< Player, MyCircle, Rule::Collide, true>();
 
 	TextureLoader::Load("SpriteSheet_Nova.png", {}, {});
 	
 	// create start Object here
-
-	new MyCircle(root);
-	auto* player = new Player(root);
 	new RandomSquare(root);
+	auto* player = new Player(root);
+	//auto* bullet = new Bullet(root);	
+	
 
 }
 
