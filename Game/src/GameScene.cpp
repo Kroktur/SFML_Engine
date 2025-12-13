@@ -4,6 +4,7 @@
 #include "CollisionRule.h"
 #include "BusinessMan.h"
 #include "MyPlayer.h"
+#include "BulletPlayer.h"
 
 GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime)
 {}
@@ -18,6 +19,12 @@ void GameScene::MyInit()
 	m_dispatcher.Add< BusinessMan, Bullet, Rule::Collide, true>();
 	m_dispatcher.Add< Rect, Bullet, Rule::Collide, true>();
 	m_dispatcher.Add< Bullet, Bullet, Rule::Collide, false>();
+	m_dispatcher.Add< MyPlayer, BulletPlayer, Rule::Collide, true>();
+	m_dispatcher.Add< BulletPlayer, BulletPlayer, Rule::Collide, false>();
+	m_dispatcher.Add< MyGameObject, MyPlayer, Rule::Collide, true>();
+	m_dispatcher.Add< MyGameObject, BulletPlayer, Rule::Collide, true>();
+
+
 
 	TextureLoader::Load("SpriteSheet_Nova.png", {}, {});
 	
@@ -26,6 +33,8 @@ void GameScene::MyInit()
 	m_player = new MyPlayer(root, 300.0f);
 	new Rect(root);
 	new BusinessMan(root, 800.0f);
+	m_player = new MyPlayer(root, 500.0f);
+	new MyGameObject(root);
 	
 }
 

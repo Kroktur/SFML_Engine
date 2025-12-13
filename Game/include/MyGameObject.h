@@ -12,3 +12,12 @@ public:
 	void Input(const std::optional<sf::Event>& event) override; // if has no input don't need
 	void Update(float deltatime) override; // if has no logic don't need
 };
+class MyGameObject : public CollidableRectangleComposite
+{
+public:
+	MyGameObject(BaseComposite* parent);
+	void OnInit() override;
+	void Update(float deltatime) override;
+	void OnDestroy() override;
+
+};
