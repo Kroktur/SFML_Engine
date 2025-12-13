@@ -9,7 +9,7 @@ Bullet::Bullet(BaseComposite* parent,KT::Vector2F pos,bool right) : CollidableRe
 
 void Bullet::OnInit()
 {
-	GetRectangle()->setSize({ 10,5 });
+	GetRectangle()->setSize({ 20,10 });
 	GetRectangle()->setFillColor(sf::Color::Yellow);
 	GetRectangle()->setPosition({ m_startPos.x,m_startPos.y });
 	if (m_isRight)
@@ -66,11 +66,11 @@ void BulletMoveState::Update(const float& dt)
 {
 	if (m_entity->GetIsGoingRight()) {
 
-		m_entity->GetRectangle()->move({ 600.0f * dt, 0.0f });
+		m_entity->GetRectangle()->move({ 300.0f * dt, 0.0f });
 
 	}
 	else {
-		m_entity->GetRectangle()->move({ -600.0f * dt, 0.0f });
+		m_entity->GetRectangle()->move({ -300.0f * dt, 0.0f });
 	}
 	if (m_entity->GetIsGoingToDie()) {
 		SetNextState<BulletDyingState>(m_animation);

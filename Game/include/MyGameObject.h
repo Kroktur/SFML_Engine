@@ -26,3 +26,10 @@ class EmptyComposite : public RectangleComposite
 public:
 	EmptyComposite(BaseComposite* base) : RectangleComposite(base) {}
 };
+
+class BackGround : public RectangleComposite
+{
+public:
+	BackGround(BaseComposite* parent) : RectangleComposite(parent) {}
+	void OnInit() override;
+};

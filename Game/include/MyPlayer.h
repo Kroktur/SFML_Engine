@@ -16,7 +16,6 @@ public:
 	float GetJumpHeight() const;
 	void Update(float deltatime) override;
 	void Render(float alpha) override;
-
 	void Input(const std::optional<sf::Event>& event) override;
 	void Attack(bool);
 private:
@@ -24,7 +23,8 @@ private:
 	KT::StateMachine<MyPlayer>* m_playerStateMachine;
 	AnimationManager* m_manager;
 	LoopAnimation* m_animation;
-	KT::Chrono<float> m_attackCooldown;};
+	KT::Chrono<float> m_attackCooldown;
+};
 
 class PlayerState : public KT::IState<MyPlayer>
 {

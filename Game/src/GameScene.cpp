@@ -17,18 +17,23 @@ void GameScene::MyInit()
 	auto* root = static_cast<SFMLRoot<GameScene>*>(this);
 	//First of All Init Dispatcher
 
-	m_dispatcher.Add< BusinessMan, Bullet, Rule::Collide, true>();
-	m_dispatcher.Add< Rect, Bullet, Rule::Collide, true>();
 	m_dispatcher.Add< Bullet, Bullet, Rule::Collide, false>();
-	m_dispatcher.Add< MyPlayer, BulletPlayer, Rule::Collide, true>();
-	m_dispatcher.Add< BulletPlayer, BulletPlayer, Rule::Collide, false>();
-	m_dispatcher.Add< MyGameObject, MyPlayer, Rule::Collide, true>();
-	m_dispatcher.Add< MyGameObject, BulletPlayer, Rule::Collide, true>();
+	m_dispatcher.Add< BusinessMan, MyPlayer, Rule::Collide, true>();
+	m_dispatcher.Add< BusinessMan, BulletPlayer, Rule::Collide, true>();
+	m_dispatcher.Add< MyPlayer, Bullet, Rule::Collide, true>();
+	m_dispatcher.Add< Bullet, BulletPlayer, Rule::Collide, true>();
 
 	//proper Rules
 	m_dispatcher.Add< MyPlayer, WallToBlock, Rule::Collide, true>();
 	m_dispatcher.Add< BulletPlayer, WallToBlock, Rule::Collide, true>();
 	m_dispatcher.Add< BulletPlayer, WallToDestroy, Rule::Collide, true>();
+	m_dispatcher.Add< BusinessMan, WallToBlock, Rule::Collide, true>();
+	m_dispatcher.Add< Bullet, WallToBlock, Rule::Collide, true>();
+	m_dispatcher.Add< Bullet, WallToDestroy, Rule::Collide, true>();
+
+	m_dispatcher.Add< MyPlayer, BulletPlayer, Rule::Collide, true>();
+	m_dispatcher.Add< BulletPlayer, BulletPlayer, Rule::Collide, false>();
+	m_dispatcher.Add< BusinessMan, Bullet, Rule::Collide, true>();
 
 
 
@@ -45,8 +50,9 @@ void GameScene::MyInit()
 	 new WallToBlock(m_layer2, { static_cast<float>(GetWindow().getSize().x),0 }, { 100, static_cast<float>(GetWindow().getSize().y) });
 	 new WallToDestroy(m_layer2, { -2 - 500.0f,0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
 	 new WallToDestroy(m_layer2, { static_cast<float>(GetWindow().getSize().x + 500),0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
-
-	m_player = new MyPlayer(m_layer2, 300.0f);
+	 new BackGround(m_layer1);
+	m_player = new MyPlayer(m_layer2, 685);
+	new BusinessMan(m_layer2, 715);
 	//new Rect(root);
 	//new BusinessMan(root, 800.0f);
 	//m_player = new MyPlayer(root, 500.0f);

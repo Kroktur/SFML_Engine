@@ -12,8 +12,8 @@ void MyPlayer::OnDestroy()
 
 void MyPlayer::OnInit()
 {
-	GetRectangle()->setSize({ 47,70 });
-	GetRectangle()->setPosition({100,m_capY});
+	GetRectangle()->setSize({ 47 * 3,70 * 3});
+	GetRectangle()->setPosition({0.0f,m_capY});
 	m_manager = new AnimationManager{ "graineman_sprite_sheet_70x47.png", KT::Vector2UI(376, 560), KT::Vector2UI(0, 0), KT::Vector2UI(8, 8) };
 	m_animation = new LoopAnimation{ m_manager,33,35,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f) };
 	m_animation->SetTexture(GetRectangle());
@@ -27,12 +27,12 @@ float MyPlayer::GetCapY() const
 
 float MyPlayer::GetSpeed() const
 {
-	return 150.f;
+	return 300.f;
 }
 
 float MyPlayer::GetJumpHeight() const
 {
-	return m_capY - 75.0f;
+	return m_capY - 200.0f;
 }
 
 void MyPlayer::Update(float deltatime)
@@ -109,7 +109,7 @@ void LeftIdle::ProcessInput()
 void LeftIdle::OnEnter()
 {
 	m_animation->SetMinMax(41, 43);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.2f));
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f));
 }
 
 RightIdle::RightIdle(MyPlayer* owner, LoopAnimation* anim): IdleBaseState(owner, anim)
@@ -131,7 +131,7 @@ void RightIdle::ProcessInput()
 void RightIdle::OnEnter()
 {
 	m_animation->SetMinMax(33, 35);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.2f));
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f));
 }
 
 MovingBase::MovingBase(MyPlayer* owner, LoopAnimation* anim, float dirFactor): PlayerState(owner,anim),m_dirFactor(dirFactor)
@@ -154,7 +154,7 @@ MovingLeft::MovingLeft(MyPlayer* owner, LoopAnimation* anim): MovingBase(owner, 
 void MovingLeft::OnEnter()
 {
 	m_animation->SetMinMax(57, 64);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.2f));
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f));
 }
 
 void MovingLeft::ProcessInput()
@@ -182,7 +182,7 @@ MovingRight::MovingRight(MyPlayer* owner, LoopAnimation* anim): MovingBase(owner
 void MovingRight::OnEnter()
 {
 	m_animation->SetMinMax(49, 56);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.2f));
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f));
 }
 
 void MovingRight::ProcessInput()
@@ -245,8 +245,8 @@ void JumpIdleLeftState::ProcessInput()
 
 void JumpIdleLeftState::OnEnter()
 {
-	m_animation->SetMinMax(26, 27);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f));
+	m_animation->SetMinMax(26, 29);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.17f));
 }
 
 JumpIdleRightState::JumpIdleRightState(MyPlayer* owner, LoopAnimation* anim): JumpIdleBase(owner, anim)
@@ -263,8 +263,8 @@ void JumpIdleRightState::ProcessInput()
 
 void JumpIdleRightState::OnEnter()
 {
-	m_animation->SetMinMax(18, 19);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f));
+	m_animation->SetMinMax(18, 21);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.17f));
 }
 
 BaseJumpMoving::BaseJumpMoving(MyPlayer* owner, LoopAnimation* anim, float dirFactor): PlayerState(owner, anim), m_dirFactor(dirFactor)
@@ -303,8 +303,8 @@ void JumpLeft::ProcessInput()
 
 void JumpLeft::OnEnter()
 {
-	m_animation->SetMinMax(26, 27);		
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f));
+	m_animation->SetMinMax(26, 29);		
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.17f));
 }
 
 JumpRight::JumpRight(MyPlayer* owner, LoopAnimation* anim): BaseJumpMoving(owner, anim, 1)
@@ -329,8 +329,8 @@ void JumpRight::ProcessInput()
 
 void JumpRight::OnEnter()
 {
-	m_animation->SetMinMax(18, 19);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f));
+	m_animation->SetMinMax(18, 21);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.17f));
 }
 
 DownIdleBase::DownIdleBase(MyPlayer* owner, LoopAnimation* anim): PlayerState(owner, anim)
@@ -373,8 +373,8 @@ void DownIdleLeftState::ProcessInput()
 
 void DownIdleLeftState::OnEnter()
 {
-	m_animation->SetMinMax(28, 29);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f));
+	//m_animation->SetMinMax(28, 29);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.4f));
 
 }
 
@@ -392,8 +392,8 @@ void DownIdleRightState::ProcessInput()
 
 void DownIdleRightState::OnEnter()
 {
-	m_animation->SetMinMax(20, 21);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f));
+	//m_animation->SetMinMax(20, 21);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.4f));
 }
 
 BaseDownMoving::BaseDownMoving(MyPlayer* owner, LoopAnimation* anim, float dirFactor): PlayerState(owner, anim), m_dirFactor(dirFactor)
@@ -432,8 +432,8 @@ void DownLeft::ProcessInput()
 
 void DownLeft::OnEnter()
 {
-	m_animation->SetMinMax(28, 29);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f));
+	//m_animation->SetMinMax(28, 29);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.4f));
 }
 
 DownRight::DownRight(MyPlayer* owner, LoopAnimation* anim): BaseDownMoving(owner, anim, 1)
@@ -458,8 +458,8 @@ void DownRight::ProcessInput()
 
 void DownRight::OnEnter()
 {
-	m_animation->SetMinMax(20, 21);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f));
+	//m_animation->SetMinMax(20, 21);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.4f));
 }
 
 //IdlePlayerState::IdlePlayerState(MyPlayer* owner, LoopAnimation* anim): PlayerState(owner, anim)

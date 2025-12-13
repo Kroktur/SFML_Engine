@@ -1,5 +1,5 @@
 #include "MyGameObject.h"
-
+#include "SFML_Engine_Impl/ISFMLScene.h"
 
 void Rect::OnInit()
 {
@@ -37,4 +37,11 @@ void MyGameObject::Update(float deltatime)
 
 void MyGameObject::OnDestroy()
 {
+}
+
+void BackGround::OnInit()
+{
+	RectangleComposite::OnInit();
+	GetRectangle()-> setSize({ static_cast<float>(GetScene()->GetWindow().getSize().x), static_cast<float>(GetScene()->GetWindow().getSize().y) });
+	GetRectangle()->setTexture(&TextureLoader::Load("map_que_jai_pas_perdu.png",{},{}));
 }

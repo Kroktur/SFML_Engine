@@ -88,18 +88,18 @@ void GameScene::ProcessInput()
 		if (event->is<sf::Event::Closed>())
 			GetWindow().close();
 		// here for switch scene
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B))
-		{
-
-			if (!m_debugMode.has_value())
-				m_debugMode = true;
-			else if (m_debugMode.value() == false)
-				m_debugMode = true;
-			else
-				m_debugMode = false;
-		}
+		
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B))
+	{
 
+		if (!m_debugMode.has_value())
+			m_debugMode = true;
+		else if (m_debugMode.value() == false)
+			m_debugMode = true;
+		else
+			m_debugMode = false;
+	}
 	//INPUT HERE
 	MyInput(GetWindow().pollEvent());
 	//INPUT STOP

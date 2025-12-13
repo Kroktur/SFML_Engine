@@ -16,7 +16,7 @@ void BusinessMan::OnDestroy()
 
 void BusinessMan::OnInit()
 {
-	GetRectangle()->setSize({ 100,100 });
+	GetRectangle()->setSize({ 55 * 3,80*3 });
 	GetRectangle()->setPosition({ 500,m_capY });
 	m_manager = new AnimationManager{ "SpriteSheet_Nova.png", KT::Vector2UI(528, 624), KT::Vector2UI(0, 0), KT::Vector2UI(11, 13) };
 	m_animation = new LoopAnimation{ m_manager,1,10,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f) };
@@ -34,7 +34,7 @@ void BusinessMan::Update(float deltatime)
 
 	m_playerStateMachine->ChangeState();
 	m_playerStateMachine->Update(deltatime);
-	if (m_coolDown.GetElapsedTime().AsSeconds() > 0.5f)
+	if (m_coolDown.GetElapsedTime().AsSeconds() > 1.5f)
 	{
 
 		auto player = GetMyScene()->GetPlayer();
