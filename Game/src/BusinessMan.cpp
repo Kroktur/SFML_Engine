@@ -28,7 +28,7 @@ void BusinessMan::OnInit()
 	}
 	GetRectangle()->setSize({ 55 * 3,80*3 });
 	GetRectangle()->setPosition({ x,m_capY });
-	m_manager = new AnimationManager{ "Businessman_sprite_sheet_440x320.png", KT::Vector2UI(440, 320), KT::Vector2UI(0, 0), KT::Vector2UI(8, 4) };
+	m_manager = new AnimationManager{ "Businessman_sprite_sheet.png", KT::Vector2UI(440, 480), KT::Vector2UI(0, 0), KT::Vector2UI(8, 6) };
 	m_animation = new LoopAnimation{ m_manager,9,17,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f) };
 	m_animation->SetTexture(GetRectangle());
 	m_playerStateMachine = new KT::StateMachine<BusinessMan>(std::make_unique<BusinessIdleLeft>(this, m_animation), 1);
@@ -326,6 +326,8 @@ RedemptionLeft::RedemptionLeft(BusinessMan* owner, LoopAnimation* anim) : BaseRe
 void RedemptionLeft::OnEnter()
 {
 	BaseRedemptionState::OnEnter();
+	m_animation->SetMinMax(41, 47);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f));
 }
 
 RedemptionRight::RedemptionRight(BusinessMan* owner, LoopAnimation* anim) : BaseRedemptionState(owner,anim,1)
@@ -335,6 +337,8 @@ RedemptionRight::RedemptionRight(BusinessMan* owner, LoopAnimation* anim) : Base
 void RedemptionRight::OnEnter()
 {
 	BaseRedemptionState::OnEnter();
+	m_animation->SetMinMax(33, 40);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f));
 }
 
 

@@ -6,8 +6,9 @@ BulletPlayer::BulletPlayer(BaseComposite* parent, KT::Vector2F pos, bool isGoing
 
 void BulletPlayer::OnInit()
 {
-	GetRectangle()->setSize({ 11*3,5*3 });
+	GetRectangle()->setSize({ 10*3,5*3 });
 	GetRectangle()->setFillColor(sf::Color::White);
+	GetRectangle()->setTexture(&TextureLoader::Load("Graine.png", {}, {}));
 	if (IsGoingRight)
 	{
 		GetRectangle()->setPosition({ m_startPos.x + 70,m_startPos.y });

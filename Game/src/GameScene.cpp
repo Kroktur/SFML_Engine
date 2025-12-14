@@ -12,8 +12,6 @@
 GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime)
 {}
 
-
-
 void GameScene::MyInit()
 {
 	auto* root = static_cast<SFMLRoot<GameScene>*>(this);

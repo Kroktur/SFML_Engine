@@ -3,7 +3,7 @@
 void Music::OnInit()
 {
     GetMusic()->openFromFile(MusicLoader::Load("La_folie_des_graines.wav"));
-    GetMusic()->setVolume(100.f);
+    GetMusic()->setVolume(300.0f);
 
     GetMusic()->setLooping(true);
     GetMusic()->play();
