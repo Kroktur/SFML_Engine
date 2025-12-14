@@ -21,7 +21,7 @@ void BusinessMan::OnInit()
 	m_manager = new AnimationManager{ "SpriteSheet_Nova.png", KT::Vector2UI(528, 624), KT::Vector2UI(0, 0), KT::Vector2UI(11, 13) };
 	m_animation = new LoopAnimation{ m_manager,1,10,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f) };
 	m_animation->SetTexture(GetRectangle());
-	m_playerStateMachine = new KT::StateMachine<BusinessMan>(std::make_unique<BusinessManIdleState>(this, m_animation), 1);
+	m_playerStateMachine = new KT::StateMachine<BusinessMan>(std::make_unique<BusinessIdleLeft>(this, m_animation), 1);
 }
 
 float BusinessMan::GetCapY() const
@@ -29,31 +29,35 @@ float BusinessMan::GetCapY() const
 	return m_capY;
 }
 
+float BusinessMan::GetSpeed()
+{
+	return 25.f;
+}
+
 void BusinessMan::Update(float deltatime)
 {
 
 	m_playerStateMachine->ChangeState();
 	m_playerStateMachine->Update(deltatime);
-	if (m_coolDown.GetElapsedTime().AsSeconds() > 1.5f)
-	{
-
-		auto player = GetMyScene()->GetPlayer();
-		auto PlayerPos = player->GetRectangle()->getPosition();
-
-		auto BusinessPos = GetRectangle()->getPosition();
-
-		bool IsRight = PlayerPos.x > BusinessPos.x;
-
-		auto bullet = new Bullet(this, { GetRectangle()->getPosition().x , GetRectangle()->getPosition().y}, IsRight);
-		bullet->OnInit();
-		m_coolDown.Reset();
-	}
 
 }
 
 void BusinessMan::Render(float alpha)
 {
 	m_playerStateMachine->Render(alpha);
+}
+
+void BusinessMan::Attack()
+{
+	auto player = GetMyScene()->GetPlayer();
+	auto PlayerPos = player->GetRectangle()->getPosition();
+
+	auto BusinessPos = GetRectangle()->getPosition();
+
+	bool IsRight = PlayerPos.x > BusinessPos.x;
+
+	auto bullet = new Bullet(this, { GetRectangle()->getPosition().x , GetRectangle()->getPosition().y }, IsRight);
+	bullet->OnInit();
 }
 
 void BusinessMan::Input(const std::optional<sf::Event>& event)
@@ -72,101 +76,178 @@ BusinessManState::BusinessManState(BusinessMan* owner, LoopAnimation* anim) : KT
 }
 
 
-BusinessManIdleState::BusinessManIdleState(BusinessMan* owner, LoopAnimation* anim) : BusinessManState(owner, anim)
+BaseBusinessIdle::BaseBusinessIdle(BusinessMan* owner, LoopAnimation* anim) : BusinessManState(owner, anim)
+{
+
+}
+
+void BaseBusinessIdle::Update(const float& dt)
+{
+	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+	auto player = m_entity->GetMyScene()->GetPlayer();
+	if (!player)
+		return;
+	auto pos = player->GetRectangle()->getPosition();
+	if (pos.x > m_entity->GetRectangle()->getPosition().x)
+	{
+		SetNextState<BusinessMoveRight>(m_animation);
+	}
+	if (pos.x < m_entity->GetRectangle()->getPosition().x)
+	{
+		SetNextState<BusinessMoveLeft>(m_animation);
+	}
+}
+
+BusinessIdleLeft::BusinessIdleLeft(BusinessMan* owner, LoopAnimation* anim) : BaseBusinessIdle(owner, anim)
 {
 }
 
-
-void BusinessManIdleState::Update(const float& dt)
+void BusinessIdleLeft::OnEnter()
 {
-	auto player = m_entity->GetMyScene()->GetPlayer();
-	player->GetRectangle()->getPosition();
+	BaseBusinessIdle::OnEnter();
+}
 
+BusinessIdleRight::BusinessIdleRight(BusinessMan* owner, LoopAnimation* anim) : BaseBusinessIdle(owner, anim)
+{
+}
+
+void BusinessIdleRight::OnEnter()
+{
+	BaseBusinessIdle::OnEnter();
+}
+
+BaseBusinessMove::BaseBusinessMove(BusinessMan* owner, LoopAnimation* anim,float dirFactor) : BusinessManState(owner, anim),m_dirFactor(dirFactor)
+{
+}
+
+void BaseBusinessMove::Update(const float& dt)
+{
+	BusinessManState::Update(dt);
 	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+	auto player = m_entity->GetMyScene()->GetPlayer();
+	if (!player)
+		return;
+}
 
+BusinessMoveLeft::BusinessMoveLeft(BusinessMan* owner, LoopAnimation* anim) : BaseBusinessMove(owner, anim,-1)
+{
+}
+
+void BusinessMoveLeft::OnEnter()
+{
+	BaseBusinessMove::OnEnter();
+}
+
+void BusinessMoveLeft::Update(const float& dt)
+{
+	BaseBusinessMove::Update(dt);
+	auto player = m_entity->GetMyScene()->GetPlayer();
+	if (!player)
+		return;
 	if (player->GetRectangle()->getPosition().x > m_entity->GetRectangle()->getPosition().x)
 	{
-		SetNextState<BusinessManRightState>(m_animation);
+		SetNextState<BusinessMoveRight>(m_animation);
 	}
-	else if (player->GetRectangle()->getPosition().x < m_entity->GetRectangle()->getPosition().x)
+
+	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 480 && m_coolDown.GetElapsedTime().AsSeconds() > 2.0f)
 	{
-		SetNextState<BusinessManLeftState>(m_animation);
+		// on peux tirer
+		auto randNum = m_random.getRandomNumber(1, 2);
+		if (randNum == 2)
+		{
+			SetNextState<BusinessAtackLeft>(m_animation);
+		}
+		m_coolDown.Reset();
 	}
+	auto potentialX = m_entity->GetRectangle()->getPosition().x +  -m_entity->GetSpeed() * dt;
+	auto playerX = player->GetRectangle()->getPosition().x;
+	float x = std::max(potentialX, playerX);
+	m_entity->GetRectangle()->setPosition({ x,m_entity->GetCapY() });
 }
 
-
-void BusinessManIdleState::OnEnter()
+BusinessMoveRight::BusinessMoveRight(BusinessMan* owner, LoopAnimation* anim) : BaseBusinessMove(owner, anim,1)
 {
-	m_animation->SetMinMax(1, 10);
 }
 
-
-
-void BusinessManRightState::Update(const float& dt)
+void BusinessMoveRight::OnEnter()
 {
+	BaseBusinessMove::OnEnter();
+}
+
+void BusinessMoveRight::Update(const float& dt)
+{
+	BaseBusinessMove::Update(dt);
 	auto player = m_entity->GetMyScene()->GetPlayer();
-	player->GetRectangle()->getPosition();
-
-	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-
+	if (!player)
+		return;
 	if (player->GetRectangle()->getPosition().x < m_entity->GetRectangle()->getPosition().x)
 	{
-		SetNextState<BusinessManLeftState>(m_animation);
+		SetNextState<BusinessMoveLeft>(m_animation);
 	}
-	else if (player->GetRectangle()->getPosition().x == m_entity->GetRectangle()->getPosition().x)
+
+	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 480 && m_coolDown.GetElapsedTime().AsSeconds() > 2.0f)
 	{
-		SetNextState<BusinessManIdleState>(m_animation);
+		// on peux tirer
+		auto randNum = m_random.getRandomNumber(1, 2);
+		if (randNum == 2)
+		{
+			SetNextState<BusinessAtackRight>(m_animation);
+		}
+		m_coolDown.Reset();
 	}
-	else
-	{
-		auto potentialX = m_entity->GetRectangle()->getPosition().x + 50 * dt;
-		auto playerX = player->GetRectangle()->getPosition().x;
-		float x = std::min(potentialX, playerX);
-		m_entity->GetRectangle()->setPosition({ x,m_entity->GetCapY()});
-	}
+	auto potentialX = m_entity->GetRectangle()->getPosition().x + m_entity->GetSpeed() * dt;
+	auto playerX = player->GetRectangle()->getPosition().x;
+	float x = std::min(potentialX, playerX);
+	m_entity->GetRectangle()->setPosition({ x,m_entity->GetCapY() });
 }
 
-
-BusinessManRightState::BusinessManRightState(BusinessMan* owner, LoopAnimation* anim) : BusinessManState(owner, anim)
+BusinessBaseAttack::BusinessBaseAttack(BusinessMan* owner, LoopAnimation* anim) : BusinessManState(owner, anim), m_endAtack(false)
 {
 }
 
-void BusinessManRightState::OnEnter()
+void BusinessBaseAttack::Update(const float& dt)
 {
-	m_animation->SetMinMax(12, 20);
-
-}
-BusinessManLeftState::BusinessManLeftState(BusinessMan* owner, LoopAnimation* anim) : BusinessManState(owner, anim)
-{
-
-}
-
-void BusinessManLeftState::Update(const float& dt)
-{
-	auto player = m_entity->GetMyScene()->GetPlayer();
-	player->GetRectangle()->getPosition();
+	BusinessManState::Update(dt);
 	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-	if (player->GetRectangle()->getPosition().x > m_entity->GetRectangle()->getPosition().x)
+	if (m_attackTimer.GetElapsedTime().AsSeconds() > 0.15f)
 	{
-		SetNextState<BusinessManRightState>(m_animation);
-	}
-	else if (player->GetRectangle()->getPosition().x == m_entity->GetRectangle()->getPosition().x)
-	{
-		SetNextState<BusinessManIdleState>(m_animation);
-	}
-	else
-	{
-		auto potentialX = m_entity->GetRectangle()->getPosition().x - 50 * dt;
-		auto playerX = player->GetRectangle()->getPosition().x;
-		float x = std::max(potentialX, playerX);
-		m_entity->GetRectangle()->setPosition({ x,m_entity->GetCapY() });
+		m_entity->Attack();
+		m_endAtack = true;
 	}
 }
 
-void BusinessManLeftState::OnEnter()
+BusinessAtackLeft::BusinessAtackLeft(BusinessMan* owner, LoopAnimation* anim) : BusinessBaseAttack(owner, anim)
 {
-	m_animation->SetMinMax(23, 31);
 }
 
+
+void BusinessAtackLeft::OnEnter()
+{
+	BusinessBaseAttack::OnEnter();
+}
+
+void BusinessAtackLeft::Update(const float& dt)
+{
+	BusinessBaseAttack::Update(dt);
+	if (m_endAtack)
+		SetNextState<BusinessIdleLeft>(m_animation);
+}
+
+BusinessAtackRight::BusinessAtackRight(BusinessMan* owner, LoopAnimation* anim) : BusinessBaseAttack(owner, anim)
+{
+}
+
+
+void BusinessAtackRight::OnEnter()
+{
+	BusinessBaseAttack::OnEnter();
+}
+
+void BusinessAtackRight::Update(const float& dt)
+{
+	BusinessBaseAttack::Update(dt);
+	if (m_endAtack)
+		SetNextState<BusinessIdleRight>(m_animation);
+}
 
 

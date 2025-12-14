@@ -14,11 +14,11 @@ void Bullet::OnInit()
 	GetRectangle()->setPosition({ m_startPos.x,m_startPos.y });
 	if (m_isRight)
 	{
-		GetRectangle()->setPosition({ m_startPos.x + 50,m_startPos.y + 50 });
+		GetRectangle()->setPosition({ m_startPos.x + 50,m_startPos.y });
 	}
 	else
 	{
-		GetRectangle()->setPosition({ m_startPos.x +30,m_startPos.y +50 });
+		GetRectangle()->setPosition({ m_startPos.x +30,m_startPos.y });
 	}
 	m_bulletStateMachine = new KT::StateMachine<Bullet>(std::make_unique<BulletMoveState>(this, nullptr), 1);
 }

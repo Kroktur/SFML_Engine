@@ -56,9 +56,7 @@ void MyPlayer::Input(const std::optional<sf::Event>& event)
 
 void MyPlayer::Attack(bool isShootingRight)
 {
-	if(m_attackCooldown.GetElapsedTime().AsSeconds() < 0.1f)
-		return;
-	auto bullet = new BulletPlayer(this, {GetRectangle()->getPosition().x,GetRectangle()->getPosition().y}, isShootingRight);
+	auto bullet = new BulletPlayer(this, {GetRectangle()->getPosition().x,GetRectangle()->getPosition().y + 105}, isShootingRight);
 	bullet->OnInit();
 	m_attackCooldown.Reset();
 }
@@ -487,7 +485,7 @@ AttackRightState::AttackRightState(MyPlayer* owner, LoopAnimation* anim) : Attac
 void AttackRightState::OnEnter()
 {
 	m_animation->SetMinMax(1, 2);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.8f));
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.6f));
 		
 }
 
@@ -506,7 +504,7 @@ AttackLeftState::AttackLeftState(MyPlayer* owner, LoopAnimation* anim) : AttackS
 void AttackLeftState::OnEnter()
 {
 	m_animation->SetMinMax(9, 10);
-	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.8f));
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.6f));
 }
 
 void AttackLeftState::ProcessInput()

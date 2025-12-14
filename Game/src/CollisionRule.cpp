@@ -2,6 +2,7 @@
 
 void Rule::Collide(BusinessMan& c, Bullet& c2, solver)
 {
+
 }
 
 
@@ -27,7 +28,6 @@ void Rule::Collide(BulletPlayer& bp, WallToDestroy&, solver)
 
 void Rule::Collide(BusinessMan& p, WallToBlock&, solver t)
 {
-    //p.GetRectangle()->move({ t.mvt.x,t.mvt.y });
 
 }
 

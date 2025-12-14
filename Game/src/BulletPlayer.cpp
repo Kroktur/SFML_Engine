@@ -10,11 +10,11 @@ void BulletPlayer::OnInit()
 	GetRectangle()->setFillColor(sf::Color::White);
 	if (IsGoingRight)
 	{
-		GetRectangle()->setPosition({ m_startPos.x + 70,m_startPos.y + 50 });
+		GetRectangle()->setPosition({ m_startPos.x + 70,m_startPos.y });
 	}
 	else 
 	{
-		GetRectangle()->setPosition({ m_startPos.x + 10,m_startPos.y + 50 });
+		GetRectangle()->setPosition({ m_startPos.x + 10,m_startPos.y });
 	}
 	m_bulletStateMachine = new KT::StateMachine<BulletPlayer>(std::make_unique<MoveBulletState>(this, nullptr), 1);
 }
