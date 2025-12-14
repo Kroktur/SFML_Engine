@@ -30,6 +30,7 @@ private:
 	AnimationManager* m_manager;
 	LoopAnimation* m_animation;
 	KT::Chrono<float> m_coolDown;
+	KT::Random m_random;
 };
 
 class BusinessManState : public KT::IState<BusinessMan>

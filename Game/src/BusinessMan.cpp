@@ -16,10 +16,20 @@ void BusinessMan::OnDestroy()
 
 void BusinessMan::OnInit()
 {
+	float x;
+	auto randNumb = m_random.getRandomNumber(0, 1);
+	if (randNumb == 0)
+	{
+		x = 1920.0f;
+	}
+	else
+	{
+		x = -170.0f;
+	}
 	GetRectangle()->setSize({ 55 * 3,80*3 });
-	GetRectangle()->setPosition({ 500,m_capY });
-	m_manager = new AnimationManager{ "SpriteSheet_Nova.png", KT::Vector2UI(528, 624), KT::Vector2UI(0, 0), KT::Vector2UI(11, 13) };
-	m_animation = new LoopAnimation{ m_manager,1,10,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f) };
+	GetRectangle()->setPosition({ x,m_capY });
+	m_manager = new AnimationManager{ "Businessman_sprite_sheet_440x320.png", KT::Vector2UI(440, 320), KT::Vector2UI(0, 0), KT::Vector2UI(8, 4) };
+	m_animation = new LoopAnimation{ m_manager,9,17,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f) };
 	m_animation->SetTexture(GetRectangle());
 	m_playerStateMachine = new KT::StateMachine<BusinessMan>(std::make_unique<BusinessIdleLeft>(this, m_animation), 1);
 }
@@ -31,7 +41,7 @@ float BusinessMan::GetCapY() const
 
 float BusinessMan::GetSpeed()
 {
-	return 25.f;
+	return 75.0f;
 }
 
 void BusinessMan::Update(float deltatime)
@@ -55,8 +65,12 @@ void BusinessMan::Attack()
 	auto BusinessPos = GetRectangle()->getPosition();
 
 	bool IsRight = PlayerPos.x > BusinessPos.x;
+	Bullet* bullet;
+	if (IsRight)
+	 bullet = new Bullet(this, { GetRectangle()->getPosition().x + 55, GetRectangle()->getPosition().y + 100 }, IsRight);
+	else
+		 bullet = new Bullet(this, { GetRectangle()->getPosition().x , GetRectangle()->getPosition().y + 100 }, IsRight);
 
-	auto bullet = new Bullet(this, { GetRectangle()->getPosition().x , GetRectangle()->getPosition().y }, IsRight);
 	bullet->OnInit();
 }
 
@@ -136,6 +150,8 @@ BusinessMoveLeft::BusinessMoveLeft(BusinessMan* owner, LoopAnimation* anim) : Ba
 void BusinessMoveLeft::OnEnter()
 {
 	BaseBusinessMove::OnEnter();
+	m_animation->SetMinMax(9, 16);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.2f));
 }
 
 void BusinessMoveLeft::Update(const float& dt)
@@ -149,11 +165,11 @@ void BusinessMoveLeft::Update(const float& dt)
 		SetNextState<BusinessMoveRight>(m_animation);
 	}
 
-	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 480 && m_coolDown.GetElapsedTime().AsSeconds() > 2.0f)
+	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 800 && m_coolDown.GetElapsedTime().AsSeconds() > 1.0f)
 	{
 		// on peux tirer
-		auto randNum = m_random.getRandomNumber(1, 2);
-		if (randNum == 2)
+		auto randNum = m_random.getRandomNumber(1, 6);
+		if (randNum == 2 || randNum == 4)
 		{
 			SetNextState<BusinessAtackLeft>(m_animation);
 		}
@@ -172,6 +188,8 @@ BusinessMoveRight::BusinessMoveRight(BusinessMan* owner, LoopAnimation* anim) : 
 void BusinessMoveRight::OnEnter()
 {
 	BaseBusinessMove::OnEnter();
+	m_animation->SetMinMax(1,8);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.2f));
 }
 
 void BusinessMoveRight::Update(const float& dt)
@@ -185,11 +203,11 @@ void BusinessMoveRight::Update(const float& dt)
 		SetNextState<BusinessMoveLeft>(m_animation);
 	}
 
-	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 480 && m_coolDown.GetElapsedTime().AsSeconds() > 2.0f)
+	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 800 && m_coolDown.GetElapsedTime().AsSeconds() > 1.0f)
 	{
 		// on peux tirer
-		auto randNum = m_random.getRandomNumber(1, 2);
-		if (randNum == 2)
+		auto randNum = m_random.getRandomNumber(1, 6);
+		if (randNum == 2 || randNum == 4)
 		{
 			SetNextState<BusinessAtackRight>(m_animation);
 		}
@@ -209,7 +227,7 @@ void BusinessBaseAttack::Update(const float& dt)
 {
 	BusinessManState::Update(dt);
 	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
-	if (m_attackTimer.GetElapsedTime().AsSeconds() > 0.15f)
+	if (m_attackTimer.GetElapsedTime().AsSeconds() > 0.3f)
 	{
 		m_entity->Attack();
 		m_endAtack = true;
@@ -224,6 +242,8 @@ BusinessAtackLeft::BusinessAtackLeft(BusinessMan* owner, LoopAnimation* anim) : 
 void BusinessAtackLeft::OnEnter()
 {
 	BusinessBaseAttack::OnEnter();
+	m_animation->SetMinMax(17, 20);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f));
 }
 
 void BusinessAtackLeft::Update(const float& dt)
@@ -241,6 +261,8 @@ BusinessAtackRight::BusinessAtackRight(BusinessMan* owner, LoopAnimation* anim) 
 void BusinessAtackRight::OnEnter()
 {
 	BusinessBaseAttack::OnEnter();
+	m_animation->SetMinMax(25, 28);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.1f));
 }
 
 void BusinessAtackRight::Update(const float& dt)

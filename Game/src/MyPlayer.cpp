@@ -13,7 +13,7 @@ void MyPlayer::OnDestroy()
 void MyPlayer::OnInit()
 {
 	GetRectangle()->setSize({ 47 * 3,70 * 3});
-	GetRectangle()->setPosition({0.0f,m_capY});
+	GetRectangle()->setPosition({889.5f,m_capY});
 	m_manager = new AnimationManager{ "graineman_sprite_sheet_70x47.png", KT::Vector2UI(376, 560), KT::Vector2UI(0, 0), KT::Vector2UI(8, 8) };
 	m_animation = new LoopAnimation{ m_manager,33,35,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f) };
 	m_animation->SetTexture(GetRectangle());
