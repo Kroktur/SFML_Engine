@@ -168,3 +168,8 @@ void GameScene::RemoveScore()
 {
 	background->RemoveScore();
 }
+
+void GameScene::EndGame()
+{
+	lost = true;
+}

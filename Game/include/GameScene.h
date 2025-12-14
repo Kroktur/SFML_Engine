@@ -30,6 +30,7 @@ public:
 	void StartGame();
 	void AddScore();
 	void RemoveScore();
+	void EndGame();
 private:
 	void MyInit();
 	void MyUpdate(const float& deltatime);
@@ -44,4 +45,5 @@ private:
 	KT::Chrono<float> m_timeSpawn;
 	std::optional<bool> m_init;
 	BackGround* background;
+	bool lost;
 };

@@ -9,7 +9,7 @@
 #include "StartGame.h"
 #include "Wall.h"
 
-GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime)
+GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime),lost(false)
 {}
 
 void GameScene::MyInit()
@@ -75,12 +75,13 @@ void GameScene::MyUpdate(const float& deltatime)
 		m_init = false;
 	}
 
-	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 2.0f)
+	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 2.0f && !background->HasWinn() )
 	{
 		auto businessMan = new BusinessMan(m_layer2, 700);
 		businessMan->OnInit();
 		m_timeSpawn.Reset();
 	}
+	
 
 }
 

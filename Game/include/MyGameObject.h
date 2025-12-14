@@ -30,13 +30,14 @@ public:
 class BackGround : public RectangleComposite
 {
 public:
-	BackGround(BaseComposite* parent) : RectangleComposite(parent),m_scored(20),factor(10) {}
+	BackGround(BaseComposite* parent) : RectangleComposite(parent),m_scored(20),factor(10),hasWinn(false) {}
 	void OnInit() override;
 	void Update(float deltatime) override;
 	void AddScore();
 	void RemoveScore();
+	bool HasWinn();
 private:
 	float m_scored;
 	int factor;
-	
+	bool hasWinn;
 };

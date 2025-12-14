@@ -1,4 +1,6 @@
 #include "MyGameObject.h"
+
+#include "GameScene.h"
 #include "SFML_Engine_Impl/ISFMLScene.h"
 
 void Rect::OnInit()
@@ -47,8 +49,16 @@ void BackGround::OnInit()
 
 void BackGround::Update(float deltatime)
 {
+	if (hasWinn)
+		return;
+	if (m_scored <= 0)
+	{
+		throw std::runtime_error("ARRETEZ DE POLLUER");
+	}
 	if (m_scored > 5* factor)
 	{
+		if (m_scored >= 60)
+			hasWinn = true;
 		GetRectangle()->setTexture(&TextureLoader::Load("map 6.png", {}, {}));
 	}else if (m_scored > 4*factor)
 	{
@@ -86,5 +96,10 @@ void BackGround::AddScore()
 
 void BackGround::RemoveScore()
 {
-	m_scored = std::max(0.f, m_scored - 1);
+	m_scored--;
+}
+
+bool BackGround::HasWinn()
+{
+	return hasWinn;
 }
