@@ -35,9 +35,7 @@ void GameScene::MyInit()
 	m_dispatcher.Add< BusinessMan, Bullet, Rule::Collide, true>();
 	m_dispatcher.Add< BulletPlayer, BusinessMan, Rule::Collide, true>();
 	m_dispatcher.Add< BusinessMan, WallToDestroy, Rule::Collide, true>();
-
-
-
+	m_dispatcher.Add< BusinessMan, BusinessMan, Rule::Collide, false>();
 
 
 	TextureLoader::Load("SpriteSheet_Nova.png", {}, {});
@@ -54,8 +52,8 @@ void GameScene::MyInit()
 	 new WallToDestroy(m_layer2, { -2 - 500.0f,0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
 	 new WallToDestroy(m_layer2, { static_cast<float>(GetWindow().getSize().x + 500),0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
 	 new BackGround(m_layer1);
-	m_player = new MyPlayer(m_layer2, 685);
-	new BusinessMan(m_layer2, 715);
+	m_player = new MyPlayer(root, 735);
+	new BusinessMan(m_layer2, 700);
 	//new Rect(root);
 	//new BusinessMan(root, 800.0f);
 	//m_player = new MyPlayer(root, 500.0f);
@@ -65,6 +63,12 @@ void GameScene::MyInit()
 
 void GameScene::MyUpdate(const float& deltatime)
 {
+	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 3.0f)
+	{
+		auto businessMan = new BusinessMan(m_layer2, 700);
+		businessMan->OnInit();
+		m_timeSpawn.Reset();
+	}
 
 }
 

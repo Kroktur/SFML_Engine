@@ -30,7 +30,7 @@ namespace Rule
     void Collide(MyPlayer& c, BulletPlayer& c2, solver);
     void Collide(BulletPlayer& c, BulletPlayer& c2, solver);
     void Collide(BusinessMan& c, Bullet& c2, solver);
-
+	void Collide(BusinessMan& c, BusinessMan& c2, solver);
 
     // player balle buisnes 
     void Collide(BulletPlayer& c, BusinessMan& c2, solver s);

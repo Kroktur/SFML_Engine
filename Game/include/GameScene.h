@@ -37,4 +37,5 @@ private:
 	MyPlayer* m_player;
 	BaseComposite* m_layer1;
 	BaseComposite* m_layer2;
+	KT::Chrono<float> m_timeSpawn;
 };

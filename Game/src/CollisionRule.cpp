@@ -5,6 +5,10 @@ void Rule::Collide(BusinessMan& c, Bullet& c2, solver)
 
 }
 
+void Rule::Collide(BusinessMan& c, BusinessMan& c2, solver)
+{
+}
+
 
 void Rule::Collide(Bullet& c, Bullet& c2, solver)
 {
