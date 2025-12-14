@@ -1,9 +1,10 @@
 #include "MyPlayer.h"
 #include "BulletPlayer.h"
+#include "GameScene.h"
 #include "SoundEffect.h"
 #include "Core/Input.h"
 
-MyPlayer::MyPlayer(BaseComposite* parent, float capY) : CollidableRectangleComposite(parent), m_capY(capY), m_playerStateMachine(nullptr), m_manager(nullptr), m_animation(nullptr),m_isInvlunerable(false)
+MyPlayer::MyPlayer(BaseComposite* parent, float capY) : CollidableRectangleComposite(parent), m_capY(capY), m_playerStateMachine(nullptr), m_manager(nullptr), m_animation(nullptr),m_isInvlunerable(false),m_shield(false)
 {}
 
 void MyPlayer::OnDestroy()
@@ -94,11 +95,14 @@ void MyPlayer::Attack(bool isShootingRight)
 
 void MyPlayer::HitPlayer()
 {
+	if (m_shield)
+		return;
 	if (!m_isInvlunerable)
 	{
 		// hit
 		auto sound = new Sound(this, SoundBufferLoader::Load("Sound_explosion_graine.wav"));
 		sound->OnInit();
+		static_cast<GameScene*>(GetScene())->RemoveScore();
 		// TODO game rules for hit
 		isRed = true;
 		GetRectangle()->setFillColor(sf::Color::Red);
@@ -107,6 +111,16 @@ void MyPlayer::HitPlayer()
 		redtimer.Resume();
 		redtimer.Reset();
 	}
+}
+
+void MyPlayer::EnableShield()
+{
+	m_shield = true;
+}
+
+void MyPlayer::DisableShield()
+{
+	m_shield = false;
 }
 
 
@@ -151,6 +165,10 @@ void LeftIdle::ProcessInput()
 	{
 		SetNextState<AttackLeftState>(m_animation);
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+	{
+		SetNextState<ShieldLeft>(m_animation);
+	}
 }
 
 void LeftIdle::OnEnter()
@@ -173,6 +191,10 @@ void RightIdle::ProcessInput()
 	{
 		SetNextState<AttackRightState>(m_animation);
 
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+	{
+		SetNextState<ShieldRight>(m_animation);
 	}
 }
 
@@ -562,6 +584,54 @@ void AttackLeftState::ProcessInput()
 	if (endAtack)
 	{
 		SetNextState<LeftIdle>(m_animation);
+	}
+}
+
+ShieldLeft::ShieldLeft(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim)
+{
+}
+
+void ShieldLeft::OnEnter()
+{
+	PlayerState::OnEnter();
+	m_entity->EnableShield();
+}
+
+void ShieldLeft::OnExit()
+{
+	PlayerState::OnExit();
+	m_entity->DisableShield();
+}
+
+void ShieldLeft::ProcessInput()
+{
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+	{
+		SetNextState<LeftIdle>(m_animation);
+	}
+}
+
+ShieldRight::ShieldRight(MyPlayer* owner, LoopAnimation* anim) : PlayerState(owner, anim)
+{
+}
+
+void ShieldRight::OnEnter()
+{
+	PlayerState::OnEnter();
+	m_entity->EnableShield();
+}
+
+void ShieldRight::OnExit()
+{
+	PlayerState::OnExit();
+	m_entity->DisableShield();
+}
+
+void ShieldRight::ProcessInput()
+{
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+	{
+		SetNextState<RightIdle>(m_animation);
 	}
 }
 

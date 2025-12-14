@@ -52,7 +52,7 @@ void GameScene::MyInit()
 	 new WallToBlock(m_layer2, { static_cast<float>(GetWindow().getSize().x),0 }, { 100, static_cast<float>(GetWindow().getSize().y) });
 	 new WallToDestroy(m_layer2, { -2 - 500.0f,0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
 	 new WallToDestroy(m_layer2, { static_cast<float>(GetWindow().getSize().x + 500),0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
-	 new BackGround(m_layer1);
+	 background =  new BackGround(m_layer1);
 
 	 new TextBackGround(root);
 	new Music(root);
@@ -75,7 +75,7 @@ void GameScene::MyUpdate(const float& deltatime)
 		m_init = false;
 	}
 
-	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 2.0f)
+	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 1.0f)
 	{
 		auto businessMan = new BusinessMan(m_layer2, 700);
 		businessMan->OnInit();

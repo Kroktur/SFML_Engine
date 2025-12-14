@@ -19,6 +19,8 @@ public:
 	void Input(const std::optional<sf::Event>& event) override;
 	void Attack(bool);
 	void HitPlayer();
+	void EnableShield();
+	void DisableShield();
 private:
 	float m_capY;
 	KT::StateMachine<MyPlayer>* m_playerStateMachine;
@@ -29,6 +31,7 @@ private:
 	KT::Chrono<float> m_invulnerabilityTimer;
 	bool isRed ;
 	KT::Chrono<float> redtimer;
+	bool m_shield;
 };
 
 class PlayerState : public KT::IState<MyPlayer>
@@ -260,5 +263,23 @@ class AttackLeftState : public AttackState
 public:
 	AttackLeftState(MyPlayer* owner, LoopAnimation* anim);
 	void OnEnter() override;
+	void ProcessInput() override;
+};
+
+class ShieldLeft : public PlayerState
+{
+public:
+	ShieldLeft(MyPlayer* owner, LoopAnimation* anim);
+	void OnEnter() override;
+	void OnExit() override;
+	void ProcessInput() override;
+};
+
+class ShieldRight: public PlayerState
+{
+public:
+	ShieldRight(MyPlayer* owner, LoopAnimation* anim);
+	void OnEnter() override;
+	void OnExit() override;
 	void ProcessInput() override;
 };

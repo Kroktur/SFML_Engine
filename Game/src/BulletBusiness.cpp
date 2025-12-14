@@ -12,6 +12,7 @@ void Bullet::OnInit()
 	GetRectangle()->setSize({ 20,10 });
 	GetRectangle()->setFillColor(sf::Color::Yellow);
 	GetRectangle()->setPosition({ m_startPos.x,m_startPos.y });
+	GetRectangle()->setTexture(&TextureLoader::Load("cigare.png", {}, {}));
 	if (m_isRight)
 	{
 		GetRectangle()->setPosition({ m_startPos.x + 50,m_startPos.y });

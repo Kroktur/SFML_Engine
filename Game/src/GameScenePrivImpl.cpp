@@ -1,7 +1,7 @@
 #include "GameScene.h"
 #include "SFML_Engine_Impl/PhysicSolver.h"
 
-
+#include "MyGameObject.h"
 void GameScene::Init()
 {
 	auto* root = static_cast<SFMLRoot<GameScene>*>(this);
@@ -157,4 +157,14 @@ BaseComposite* GameScene::GetLayer2() const
 void GameScene::StartGame()
 {
 	m_init = true;
+}
+
+void GameScene::AddScore()
+{
+	background->AddScore();
+}
+
+void GameScene::RemoveScore()
+{
+	background->RemoveScore();
 }

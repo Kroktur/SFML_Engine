@@ -1,5 +1,7 @@
 #include "CollisionRule.h"
 
+#include "GameScene.h"
+
 void Rule::Collide(BusinessMan& c, Bullet& c2, solver)
 {
 
@@ -60,6 +62,8 @@ void Rule::Collide(BulletPlayer& c, BusinessMan& c2, solver s)
     if (!c2.GetIsAGoodGuy())
         c.Stop();
 	c2.HitBusinessMan();
+   
+
 }
 
 void Rule::Collide(BusinessMan& c, MyPlayer& c2, solver s)

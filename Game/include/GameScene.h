@@ -9,6 +9,7 @@
 
 #include "Core/Dispacher.h"
 
+class BackGround;
 class MyPlayer;
 using solver = KT::SolverResult<float, 2, KT::Vector2>;
 
@@ -27,6 +28,8 @@ public:
 	BaseComposite* GetLayer1() const;
 	BaseComposite* GetLayer2() const;
 	void StartGame();
+	void AddScore();
+	void RemoveScore();
 private:
 	void MyInit();
 	void MyUpdate(const float& deltatime);
@@ -40,4 +43,5 @@ private:
 	BaseComposite* m_layer2;
 	KT::Chrono<float> m_timeSpawn;
 	std::optional<bool> m_init;
+	BackGround* background;
 };

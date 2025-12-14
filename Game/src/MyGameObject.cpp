@@ -43,5 +43,48 @@ void BackGround::OnInit()
 {
 	RectangleComposite::OnInit();
 	GetRectangle()-> setSize({ static_cast<float>(GetScene()->GetWindow().getSize().x), static_cast<float>(GetScene()->GetWindow().getSize().y) });
-	GetRectangle()->setTexture(&TextureLoader::Load("map_que_jai_pas_perdu.png",{},{}));
+}
+
+void BackGround::Update(float deltatime)
+{
+	if (m_scored > 5* factor)
+	{
+		GetRectangle()->setTexture(&TextureLoader::Load("map 6.png", {}, {}));
+	}else if (m_scored > 4*factor)
+	{
+		GetRectangle()->setTexture(&TextureLoader::Load("map 5.png", {}, {}));
+
+	}
+	else if (m_scored > 3*factor)
+	{
+		GetRectangle()->setTexture(&TextureLoader::Load("map 4.png", {}, {}));
+
+	}
+	else if (m_scored > 2*factor)
+	{
+		GetRectangle()->setTexture(&TextureLoader::Load("map 3.png", {}, {}));
+
+
+	}
+	else if (m_scored > 1*factor)
+	{
+		GetRectangle()->setTexture(&TextureLoader::Load("map 2.png", {}, {}));
+
+
+	}
+	else 
+	{
+		GetRectangle()->setTexture(&TextureLoader::Load("map 1.png", {}, {}));
+
+	}
+}
+
+void BackGround::AddScore()
+{
+	m_scored++;
+}
+
+void BackGround::RemoveScore()
+{
+	m_scored = std::max(0.f, m_scored - 1);
 }

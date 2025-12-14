@@ -98,6 +98,8 @@ void BusinessMan::HitBusinessMan()
 	if (lives <= 0)
 	{
 		m_isAGoodGuy = true;
+		DisableCollision(0);
+		static_cast<GameScene*>(GetScene())->AddScore();
 	}
 	 if (lives >= 0)
 	{
