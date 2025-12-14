@@ -75,7 +75,7 @@ void GameScene::MyUpdate(const float& deltatime)
 		m_init = false;
 	}
 
-	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 3.0f)
+	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 2.0f)
 	{
 		auto businessMan = new BusinessMan(m_layer2, 700);
 		businessMan->OnInit();

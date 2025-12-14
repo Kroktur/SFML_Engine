@@ -1,5 +1,6 @@
 #include "MyPlayer.h"
 #include "BulletPlayer.h"
+#include "SoundEffect.h"
 #include "Core/Input.h"
 
 MyPlayer::MyPlayer(BaseComposite* parent, float capY) : CollidableRectangleComposite(parent), m_capY(capY), m_playerStateMachine(nullptr), m_manager(nullptr), m_animation(nullptr),m_isInvlunerable(false)
@@ -85,6 +86,8 @@ void MyPlayer::Attack(bool isShootingRight)
 {
 	auto bullet = new BulletPlayer(this, {GetRectangle()->getPosition().x,GetRectangle()->getPosition().y + 105}, isShootingRight);
 	bullet->OnInit();
+	auto sound = new Sound(this, SoundBufferLoader::Load("Sound_lance_graine.wav"));
+	sound->OnInit();
 	m_attackCooldown.Reset();
 
 }
@@ -94,6 +97,8 @@ void MyPlayer::HitPlayer()
 	if (!m_isInvlunerable)
 	{
 		// hit
+		auto sound = new Sound(this, SoundBufferLoader::Load("Sound_explosion_graine.wav"));
+		sound->OnInit();
 		// TODO game rules for hit
 		isRed = true;
 		GetRectangle()->setFillColor(sf::Color::Red);
