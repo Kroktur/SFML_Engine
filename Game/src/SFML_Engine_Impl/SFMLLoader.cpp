@@ -24,10 +24,8 @@ std::unique_ptr<sf::SoundBuffer> Priv::LoadSfmlSoundBuffer(const std::string& fi
 	return std::move(sBuffer);
 }
 
-std::unique_ptr<sf::Music> Priv::LoadSfmlMusic(const std::string& filename)
+std::unique_ptr<std::string> Priv::LoadSfmlMusic(const std::string& filename)
 {
-	std::unique_ptr <sf::Music> music = std::make_unique<sf::Music>();
-	if (!music->openFromFile(filename))
-		throw std::runtime_error("file not found");
-	return std::move(music);
+	auto str = std::make_unique<std::string>(filename);
+	return std::move(str);
 }

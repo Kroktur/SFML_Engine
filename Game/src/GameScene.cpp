@@ -5,6 +5,8 @@
 #include "BusinessMan.h"
 #include "MyPlayer.h"
 #include "BulletPlayer.h"
+#include "Music.h"
+#include "StartGame.h"
 #include "Wall.h"
 
 GameScene::GameScene(const KT::Chrono<float>::Time& refreshTime): ISFMLScene(refreshTime)
@@ -53,8 +55,9 @@ void GameScene::MyInit()
 	 new WallToDestroy(m_layer2, { -2 - 500.0f,0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
 	 new WallToDestroy(m_layer2, { static_cast<float>(GetWindow().getSize().x + 500),0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
 	 new BackGround(m_layer1);
-	m_player = new MyPlayer(root, 735);
-	new BusinessMan(m_layer2, 700);
+
+	 new TextBackGround(root);
+	new Music(root);
 	//new Rect(root);
 	//new BusinessMan(root, 800.0f);
 	//m_player = new MyPlayer(root, 500.0f);
@@ -64,6 +67,16 @@ void GameScene::MyInit()
 
 void GameScene::MyUpdate(const float& deltatime)
 {
+	if (!m_init.has_value())
+		return;
+	if (m_init == true)
+	{
+		auto* root = static_cast<SFMLRoot<GameScene>*>(this);
+		m_player = new MyPlayer(root, 735);
+		m_player->OnInit();
+		m_init = false;
+	}
+
 	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 3.0f)
 	{
 		auto businessMan = new BusinessMan(m_layer2, 700);

@@ -153,3 +153,8 @@ BaseComposite* GameScene::GetLayer2() const
 {
 	return m_layer2;
 }
+
+void GameScene::StartGame()
+{
+	m_init = true;
+}

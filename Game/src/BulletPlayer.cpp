@@ -6,7 +6,7 @@ BulletPlayer::BulletPlayer(BaseComposite* parent, KT::Vector2F pos, bool isGoing
 
 void BulletPlayer::OnInit()
 {
-	GetRectangle()->setSize({ 15,10 });
+	GetRectangle()->setSize({ 11*3,5*3 });
 	GetRectangle()->setFillColor(sf::Color::White);
 	if (IsGoingRight)
 	{

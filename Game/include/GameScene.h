@@ -26,6 +26,7 @@ public:
 	MyPlayer* GetPlayer() const;
 	BaseComposite* GetLayer1() const;
 	BaseComposite* GetLayer2() const;
+	void StartGame();
 private:
 	void MyInit();
 	void MyUpdate(const float& deltatime);
@@ -38,4 +39,5 @@ private:
 	BaseComposite* m_layer1;
 	BaseComposite* m_layer2;
 	KT::Chrono<float> m_timeSpawn;
+	std::optional<bool> m_init;
 };

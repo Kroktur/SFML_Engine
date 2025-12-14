@@ -1,5 +1,7 @@
 #include "MyPlayer.h"
 #include "BulletPlayer.h"
+#include "Core/Input.h"
+
 MyPlayer::MyPlayer(BaseComposite* parent, float capY) : CollidableRectangleComposite(parent), m_capY(capY), m_playerStateMachine(nullptr), m_manager(nullptr), m_animation(nullptr),m_isInvlunerable(false)
 {}
 
@@ -84,6 +86,7 @@ void MyPlayer::Attack(bool isShootingRight)
 	auto bullet = new BulletPlayer(this, {GetRectangle()->getPosition().x,GetRectangle()->getPosition().y + 105}, isShootingRight);
 	bullet->OnInit();
 	m_attackCooldown.Reset();
+
 }
 
 void MyPlayer::HitPlayer()
