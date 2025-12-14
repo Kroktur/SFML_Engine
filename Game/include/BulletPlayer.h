@@ -47,6 +47,9 @@ public:
 	DyingBulletState(BulletPlayer* owner, LoopAnimation* anim) : BulletState(owner, anim) {};
 	void Update(const float& dt) override;
 	void OnEnter() override;
+	void OnExit() override;
 private: 
 	KT::Chrono<float> m_livingTime;
+	AnimationManager* m_manager;
+	LoopAnimation* m_animation;
 };

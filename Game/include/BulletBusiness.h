@@ -50,6 +50,10 @@ class BulletDyingState : public BusinessBulletState
 public:
 	BulletDyingState(Bullet* owner, LoopAnimation* anim) : BusinessBulletState(owner, anim) {}
 	void Update(const float& dt) override;
+	void OnEnter() override;
+	void OnExit() override;
 private:
 	KT::Chrono<float> m_lifeTime;
+	AnimationManager* m_manager;
+	LoopAnimation* m_animation2;
 };

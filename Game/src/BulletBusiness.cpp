@@ -83,8 +83,23 @@ void BulletMoveState::Update(const float& dt)
 
 void BulletDyingState::Update(const float& dt)
 {
-	if(m_lifeTime.GetElapsedTime().AsSeconds() > 1)
-	{
+	m_animation2->UpdateShapeFrame(m_entity->GetRectangle());
+	if (m_lifeTime.GetElapsedTime().AsSeconds() > 0.9f)
 		m_entity->EnableDeath();
-	}
+}
+
+void BulletDyingState::OnEnter()
+{
+	BusinessBulletState::OnEnter();
+	m_manager = new AnimationManager{ "cigare_explosion_sprite_sheet.png", KT::Vector2UI(60, 20), KT::Vector2UI(0, 0), KT::Vector2UI(3, 1) };
+	m_animation2 = new LoopAnimation{ m_manager,1,3,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f) };
+	m_animation2->SetTexture(m_entity->GetRectangle());
+	m_entity->GetRectangle()->setSize({ 20 * 3,20 * 3 });
+}
+
+void BulletDyingState::OnExit()
+{
+	BusinessBulletState::OnExit();
+	delete m_manager;
+	delete m_animation2;
 }

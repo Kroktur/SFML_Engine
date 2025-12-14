@@ -272,7 +272,10 @@ public:
 	ShieldLeft(MyPlayer* owner, LoopAnimation* anim);
 	void OnEnter() override;
 	void OnExit() override;
+	void Update(const float& dt) override;
 	void ProcessInput() override;
+private:
+	KT::Chrono<float> m_shieldTimer;
 };
 
 class ShieldRight: public PlayerState
@@ -281,5 +284,8 @@ public:
 	ShieldRight(MyPlayer* owner, LoopAnimation* anim);
 	void OnEnter() override;
 	void OnExit() override;
+	void Update(const float& dt) override;
 	void ProcessInput() override;
+private:
+	KT::Chrono<float> m_shieldTimer;
 };

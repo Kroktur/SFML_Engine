@@ -61,11 +61,23 @@ void MoveBulletState::Update(const float& dt)
 
 void DyingBulletState::Update(const float& dt) 
 {
-	if (m_livingTime.GetElapsedTime().AsSeconds() > 1)
+	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+	if (m_livingTime.GetElapsedTime().AsSeconds() > 0.9f)
 		m_entity->EnableDeath();
 }
 
 void DyingBulletState::OnEnter()
 {
 	BulletState::OnEnter();
+	m_manager = new AnimationManager{ "graine_explosion_sprite_sheet.png", KT::Vector2UI(60, 20), KT::Vector2UI(0, 0), KT::Vector2UI(3, 1) };
+	m_animation = new LoopAnimation{ m_manager,1,3,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f) };
+	m_animation->SetTexture(m_entity->GetRectangle());
+	m_entity->GetRectangle()->setSize({ 20 * 3,20 *3});
+}
+
+void DyingBulletState::OnExit()
+{
+	BulletState::OnExit();
+	delete m_manager;
+	delete m_animation;
 }

@@ -18,7 +18,7 @@ void MyPlayer::OnInit()
 {
 	GetRectangle()->setSize({ 47 * 3,70 * 3});
 	GetRectangle()->setPosition({889.5f,m_capY});
-	m_manager = new AnimationManager{ "graineman_sprite_sheet_70x47.png", KT::Vector2UI(376, 560), KT::Vector2UI(0, 0), KT::Vector2UI(8, 8) };
+	m_manager = new AnimationManager{ "graineman_sprite_sheet_70x47.png", KT::Vector2UI(376, 700), KT::Vector2UI(0, 0), KT::Vector2UI(8, 10) };
 	m_animation = new LoopAnimation{ m_manager,33,35,KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.3f) };
 	m_animation->SetTexture(GetRectangle());
 	m_playerStateMachine = new KT::StateMachine<MyPlayer>(std::make_unique<RightIdle>(this, m_animation), 1);
@@ -595,12 +595,24 @@ void ShieldLeft::OnEnter()
 {
 	PlayerState::OnEnter();
 	m_entity->EnableShield();
+	m_animation->SetMinMax(73, 74);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.5f));
+
 }
 
 void ShieldLeft::OnExit()
 {
 	PlayerState::OnExit();
 	m_entity->DisableShield();
+
+}
+
+void ShieldLeft::Update(const float& dt)
+{
+	PlayerState::Update(dt);
+	if (m_shieldTimer.GetElapsedTime().AsSeconds() < 0.6)
+		m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+
 }
 
 void ShieldLeft::ProcessInput()
@@ -619,12 +631,22 @@ void ShieldRight::OnEnter()
 {
 	PlayerState::OnEnter();
 	m_entity->EnableShield();
+	m_animation->SetMinMax(65, 66);
+	m_animation->SetAnimationTime(KT::Chrono<float>::Time::CreateFromValue<KT::ratio<1>>(0.5f));
 }
 
 void ShieldRight::OnExit()
 {
 	PlayerState::OnExit();
 	m_entity->DisableShield();
+}
+
+void ShieldRight::Update(const float& dt)
+{
+	PlayerState::Update(dt);
+	if (m_shieldTimer.GetElapsedTime().AsSeconds() < 0.6)
+		m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+
 }
 
 void ShieldRight::ProcessInput()
