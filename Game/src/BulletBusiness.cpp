@@ -45,6 +45,8 @@ void Bullet::Update(float deltatime)
 void Bullet::Stop()
 {
 	m_isGoingToDie = true;
+	DisableCollision(0);
+
 }
 
 void Bullet::OnDestroy()

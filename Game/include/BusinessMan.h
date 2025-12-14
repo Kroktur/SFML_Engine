@@ -23,7 +23,8 @@ public:
 	void Attack();
 	void Input(const std::optional<sf::Event>& event) override;
 	GameScene* GetMyScene() const;
-
+	void HitBusinessMan();
+	bool GetIsAGoodGuy()const ;
 private:
 	float m_capY;
 	KT::StateMachine<BusinessMan>* m_playerStateMachine;
@@ -31,6 +32,9 @@ private:
 	LoopAnimation* m_animation;
 	KT::Chrono<float> m_coolDown;
 	KT::Random m_random;
+	float lives;
+	bool m_isAGoodGuy;
+	KT::Chrono<float> m_hitTimer;
 };
 
 class BusinessManState : public KT::IState<BusinessMan>
@@ -123,4 +127,27 @@ public:
 	BusinessAtackRight(BusinessMan* owner, LoopAnimation* anim);
 	void OnEnter() override;
 	void Update(const float& dt) override;
+};
+
+class BaseRedemptionState : public BusinessManState
+{
+public:
+	BaseRedemptionState(BusinessMan* owner, LoopAnimation* anim, float dirFactor);
+	void Update(const float& dt) override;
+protected:
+	float m_difFactor;
+};
+
+class RedemptionLeft : public BaseRedemptionState
+{
+public:
+	RedemptionLeft(BusinessMan* owner, LoopAnimation* anim);
+	void OnEnter() override;
+};
+
+class RedemptionRight : public BaseRedemptionState
+{
+public:
+	RedemptionRight(BusinessMan* owner, LoopAnimation* anim);
+	void OnEnter() override;
 };

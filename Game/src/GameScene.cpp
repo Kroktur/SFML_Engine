@@ -34,6 +34,8 @@ void GameScene::MyInit()
 	m_dispatcher.Add< BulletPlayer, BulletPlayer, Rule::Collide, false>();
 	m_dispatcher.Add< BusinessMan, Bullet, Rule::Collide, true>();
 	m_dispatcher.Add< BulletPlayer, BusinessMan, Rule::Collide, true>();
+	m_dispatcher.Add< BusinessMan, WallToDestroy, Rule::Collide, true>();
+
 
 
 

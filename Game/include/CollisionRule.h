@@ -41,5 +41,7 @@ namespace Rule
     //balle player balle buisness
     void Collide(BulletPlayer& c, Bullet& c2, solver s);
 
+	void Collide(BusinessMan& c, WallToDestroy& c2, solver s);
+
 
 }

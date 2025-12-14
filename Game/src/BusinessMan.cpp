@@ -3,7 +3,7 @@
 #include"MyPlayer.h"
 #include "cmath"
 #include "BulletBusiness.h"
-BusinessMan::BusinessMan(BaseComposite* parent, float capY) : CollidableRectangleComposite(parent), m_capY(capY), m_playerStateMachine(nullptr), m_manager(nullptr), m_animation(nullptr)
+BusinessMan::BusinessMan(BaseComposite* parent, float capY) : CollidableRectangleComposite(parent), m_capY(capY), m_playerStateMachine(nullptr), m_manager(nullptr), m_animation(nullptr),lives(3),m_isAGoodGuy(false)
 {
 }
 
@@ -49,6 +49,13 @@ void BusinessMan::Update(float deltatime)
 
 	m_playerStateMachine->ChangeState();
 	m_playerStateMachine->Update(deltatime);
+	if (m_hitTimer.GetElapsedTime().AsSeconds() > 0.25f)
+	{
+		GetRectangle()->setFillColor(sf::Color{ 255,255,255,255 });
+		m_hitTimer.Pause();
+		m_hitTimer.Reset();
+	}
+	
 
 }
 
@@ -85,6 +92,26 @@ GameScene* BusinessMan::GetMyScene() const
 	
 }
 
+void BusinessMan::HitBusinessMan()
+{
+	--lives;
+	if (lives <= 0)
+	{
+		m_isAGoodGuy = true;
+	}
+	 if (lives >= 0)
+	{
+		GetRectangle()->setFillColor(sf::Color::Green);
+		m_hitTimer.Resume();
+		m_hitTimer.Reset();
+	}
+}
+
+bool BusinessMan::GetIsAGoodGuy() const 
+{
+	return m_isAGoodGuy;
+}
+
 BusinessManState::BusinessManState(BusinessMan* owner, LoopAnimation* anim) : KT::IState<BusinessMan>(owner), m_animation(anim)
 {
 }
@@ -110,6 +137,7 @@ void BaseBusinessIdle::Update(const float& dt)
 	{
 		SetNextState<BusinessMoveLeft>(m_animation);
 	}
+	
 }
 
 BusinessIdleLeft::BusinessIdleLeft(BusinessMan* owner, LoopAnimation* anim) : BaseBusinessIdle(owner, anim)
@@ -179,6 +207,9 @@ void BusinessMoveLeft::Update(const float& dt)
 	auto playerX = player->GetRectangle()->getPosition().x;
 	float x = std::max(potentialX, playerX);
 	m_entity->GetRectangle()->setPosition({ x,m_entity->GetCapY() });
+
+	if (m_entity->GetIsAGoodGuy())
+		SetNextState<RedemptionRight>(m_animation);
 }
 
 BusinessMoveRight::BusinessMoveRight(BusinessMan* owner, LoopAnimation* anim) : BaseBusinessMove(owner, anim,1)
@@ -217,6 +248,8 @@ void BusinessMoveRight::Update(const float& dt)
 	auto playerX = player->GetRectangle()->getPosition().x;
 	float x = std::min(potentialX, playerX);
 	m_entity->GetRectangle()->setPosition({ x,m_entity->GetCapY() });
+	if (m_entity->GetIsAGoodGuy())
+		SetNextState<RedemptionLeft>(m_animation);
 }
 
 BusinessBaseAttack::BusinessBaseAttack(BusinessMan* owner, LoopAnimation* anim) : BusinessManState(owner, anim), m_endAtack(false)
@@ -270,6 +303,38 @@ void BusinessAtackRight::Update(const float& dt)
 	BusinessBaseAttack::Update(dt);
 	if (m_endAtack)
 		SetNextState<BusinessIdleRight>(m_animation);
+}
+
+
+
+
+BaseRedemptionState::BaseRedemptionState(BusinessMan* owner, LoopAnimation* anim, float dirFactor) : BusinessManState(owner, anim), m_difFactor(dirFactor)
+{
+}
+
+void BaseRedemptionState::Update(const float& dt)
+{
+	BusinessManState::Update(dt);
+	m_entity->GetRectangle()->move({ m_difFactor * m_entity->GetSpeed() * dt, 0 });
+	m_animation->UpdateShapeFrame(m_entity->GetRectangle());
+}
+
+RedemptionLeft::RedemptionLeft(BusinessMan* owner, LoopAnimation* anim) : BaseRedemptionState(owner, anim, -1)
+{
+}
+
+void RedemptionLeft::OnEnter()
+{
+	BaseRedemptionState::OnEnter();
+}
+
+RedemptionRight::RedemptionRight(BusinessMan* owner, LoopAnimation* anim) : BaseRedemptionState(owner,anim,1)
+{
+}
+
+void RedemptionRight::OnEnter()
+{
+	BaseRedemptionState::OnEnter();
 }
 
 

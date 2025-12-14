@@ -28,6 +28,8 @@ void BulletPlayer::Update(float deltatime)
 void BulletPlayer::Stop()
 {
 	isGoingToDie = true;
+	DisableCollision(0);
+
 }
 
 void BulletPlayer::OnDestroy()
@@ -60,4 +62,9 @@ void DyingBulletState::Update(const float& dt)
 {
 	if (m_livingTime.GetElapsedTime().AsSeconds() > 1)
 		m_entity->EnableDeath();
+}
+
+void DyingBulletState::OnEnter()
+{
+	BulletState::OnEnter();
 }

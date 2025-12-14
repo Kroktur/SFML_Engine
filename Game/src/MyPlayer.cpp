@@ -1,6 +1,6 @@
 #include "MyPlayer.h"
 #include "BulletPlayer.h"
-MyPlayer::MyPlayer(BaseComposite* parent, float capY) : CollidableRectangleComposite(parent), m_capY(capY), m_playerStateMachine(nullptr), m_manager(nullptr), m_animation(nullptr)
+MyPlayer::MyPlayer(BaseComposite* parent, float capY) : CollidableRectangleComposite(parent), m_capY(capY), m_playerStateMachine(nullptr), m_manager(nullptr), m_animation(nullptr),m_isInvlunerable(false)
 {}
 
 void MyPlayer::OnDestroy()
@@ -39,6 +39,31 @@ void MyPlayer::Update(float deltatime)
 {
 	m_playerStateMachine->ChangeState();
 	m_playerStateMachine->Update(deltatime);
+	if (m_isInvlunerable)
+	{
+		if ( m_invulnerabilityTimer.GetElapsedTime().AsSeconds() > 1.5f)
+		{
+			GetRectangle()->setFillColor(sf::Color{ 255,255,255,255 });
+			m_isInvlunerable = false;
+			redtimer.Reset();
+			redtimer.Pause();
+		}
+	
+		if (isRed && redtimer.GetElapsedTime().AsSeconds() > 0.25f)
+		{
+			GetRectangle()->setFillColor(sf::Color{ 255,255,255,255 });
+			redtimer.Reset();
+			isRed = !isRed;
+		}
+		if (!isRed && redtimer.GetElapsedTime().AsSeconds() > 0.25f)
+		{
+			GetRectangle()->setFillColor(sf::Color::Red);
+			redtimer.Reset();
+			isRed = !isRed;
+			
+		}
+	
+	}
 }
 
 
@@ -60,6 +85,22 @@ void MyPlayer::Attack(bool isShootingRight)
 	bullet->OnInit();
 	m_attackCooldown.Reset();
 }
+
+void MyPlayer::HitPlayer()
+{
+	if (!m_isInvlunerable)
+	{
+		// hit
+		// TODO game rules for hit
+		isRed = true;
+		GetRectangle()->setFillColor(sf::Color::Red);
+		m_isInvlunerable = true;
+		m_invulnerabilityTimer.Reset();
+		redtimer.Resume();
+		redtimer.Reset();
+	}
+}
+
 
 PlayerState::PlayerState(MyPlayer* owner, LoopAnimation* anim): KT::IState<MyPlayer>(owner),m_animation(anim)
 {}

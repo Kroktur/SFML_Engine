@@ -18,12 +18,17 @@ public:
 	void Render(float alpha) override;
 	void Input(const std::optional<sf::Event>& event) override;
 	void Attack(bool);
+	void HitPlayer();
 private:
 	float m_capY;
 	KT::StateMachine<MyPlayer>* m_playerStateMachine;
 	AnimationManager* m_manager;
 	LoopAnimation* m_animation;
 	KT::Chrono<float> m_attackCooldown;
+	bool m_isInvlunerable;
+	KT::Chrono<float> m_invulnerabilityTimer;
+	bool isRed ;
+	KT::Chrono<float> redtimer;
 };
 
 class PlayerState : public KT::IState<MyPlayer>
