@@ -38,6 +38,7 @@ void GameScene::MyInit()
 	m_dispatcher.Add< BusinessMan, BusinessMan, Rule::Collide, false>();
 
 
+
 	TextureLoader::Load("SpriteSheet_Nova.png", {}, {});
 	
 	// create start Object here

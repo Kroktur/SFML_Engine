@@ -58,6 +58,7 @@ void Rule::Collide(BulletPlayer& c, BulletPlayer& c2, solver)
 void Rule::Collide(BulletPlayer& c, BusinessMan& c2, solver s)
 {
 	c2.HitBusinessMan();
+    if (!c2.GetIsAGoodGuy())
     c.Stop();
 }
 
