@@ -23,7 +23,8 @@ void GameScene::MyInit()
 	m_dispatcher.Add< Bullet, BulletPlayer, Rule::Collide, true>();
 
 	//proper Rules
-	m_dispatcher.Add< MyPlayer, WallToBlock, Rule::Collide, true>();
+	m_dispatcher.Add< MyPlayer, WallToBlock, Rule::Collide, false>();
+	m_dispatcher.Add< WallToBlock, MyPlayer, Rule::Collide, false>();
 	m_dispatcher.Add< BulletPlayer, WallToBlock, Rule::Collide, true>();
 	m_dispatcher.Add< BulletPlayer, WallToDestroy, Rule::Collide, true>();
 	m_dispatcher.Add< BusinessMan, WallToBlock, Rule::Collide, true>();

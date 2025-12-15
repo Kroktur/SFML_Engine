@@ -25,7 +25,7 @@ namespace Rule
     void Collide(BusinessMan&, WallToBlock&, solver);
     void Collide(Bullet&, WallToBlock&, solver);
     void Collide(Bullet&, WallToDestroy&, solver);
-
+    void Collide(WallToBlock& p, MyPlayer& w, solver t);
 
     void Collide(MyPlayer& c, BulletPlayer& c2, solver);
     void Collide(BulletPlayer& c, BulletPlayer& c2, solver);

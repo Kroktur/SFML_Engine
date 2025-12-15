@@ -47,8 +47,9 @@ namespace KT
 				vector_type rhsCenter = KT::GetCenter(rhsPoints);
 				vector_type Dir = rhsCenter - lhsCenter;
 				// Allaxes
-				for (auto& axe : axes)
+				for (auto& axetoTest : axes)
 				{
+					VectorType<type> axe = axetoTest.Normalize();
 					auto ProjectLeft = GetMinAndMaxFromProjection(lhsPoints, axe);
 					auto ProjectRight = GetMinAndMaxFromProjection(rhsPoints, axe);
 					auto overlapInfo = OverLapResult(ProjectLeft, ProjectRight);
@@ -65,7 +66,7 @@ namespace KT
 							smallestAxis = (axe * - 1).Normalize();
 						else
 						{
-							smallestAxis = axe;
+							smallestAxis = axe.Normalize();
 						}
 					}
 				}

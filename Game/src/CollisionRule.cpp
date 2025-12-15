@@ -19,7 +19,11 @@ void Rule::Collide(Bullet& c, Bullet& c2, solver)
 
 void Rule::Collide(MyPlayer& p, WallToBlock& w, solver t)
 {
-    p.GetRectangle()->move({ t.mvt.x,t.mvt.y });
+    p.GetRectangle()->move({ -t.mvt.x,-t.mvt.y });
+}
+void Rule::Collide(WallToBlock& p, MyPlayer& w, solver t)
+{
+    w.GetRectangle()->move({ t.mvt.x,t.mvt.y });
 }
 
 void Rule::Collide(BulletPlayer&, WallToBlock&, solver)

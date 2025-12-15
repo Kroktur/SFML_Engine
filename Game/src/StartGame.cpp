@@ -30,7 +30,7 @@ void StartText::OnInit()
 	GetText()->setCharacterSize(26);
 	GetText()->setFillColor(sf::Color{ 87,105,47 });
 	GetText()->setString("");
-	m_fullText = ("Bienvenue dans Green It!\n\n"
+	m_fullText = ("Bienvenue dans Green It!\n"
 		"Objectif:\n"
 		"Convertissez l état d esprit des Businessmans pour les rendre pro verts.\n"
 		"Aidez les en lançant des graines tout en évitant leurs attaques \net leurs plans malveillants pour la ville.\n"
@@ -42,7 +42,8 @@ void StartText::OnInit()
 		"Contrôles:\n"
 		"- Utilisez les touches Q et D pour vous déplacer à gauche et à droite.\n"
 		"- Appuyez sur la Barre d espace pour sauter.\n"
-		"- Appuyez sur 'E' pour attaquer.\n\n"
+		"- Appuyez sur 'E' pour attaquer.\n"
+		"- Appuyez sur 'A' pour utiliser votre bouclier.\n\n"
 		"Bonne chance, et sauvez votre ville!                       "
 		"ENTRER  pour continuer");
 }
