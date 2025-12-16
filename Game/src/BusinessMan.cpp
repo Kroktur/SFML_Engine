@@ -195,11 +195,11 @@ void BusinessMoveLeft::Update(const float& dt)
 		SetNextState<BusinessMoveRight>(m_animation);
 	}
 
-	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 800 && m_coolDown.GetElapsedTime().AsSeconds() > 1.0f)
+	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 1000 && m_coolDown.GetElapsedTime().AsSeconds() > 0.75f)
 	{
 		// on peux tirer
-		auto randNum = m_random.getRandomNumber(1, 6);
-		if (randNum == 2 || randNum == 4)
+		auto randNum = m_random.getRandomNumber(1, 3);
+		if (randNum == 2 )
 		{
 			SetNextState<BusinessAtackLeft>(m_animation);
 		}
@@ -236,11 +236,11 @@ void BusinessMoveRight::Update(const float& dt)
 		SetNextState<BusinessMoveLeft>(m_animation);
 	}
 
-	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 800 && m_coolDown.GetElapsedTime().AsSeconds() > 1.0f)
+	if ((player->GetRectangle()->getPosition() - m_entity->GetRectangle()->getPosition()).length() < 1000 && m_coolDown.GetElapsedTime().AsSeconds() > 0.75f)
 	{
 		// on peux tirer
-		auto randNum = m_random.getRandomNumber(1, 6);
-		if (randNum == 2 || randNum == 4)
+		auto randNum = m_random.getRandomNumber(1, 3);
+		if (randNum == 2)
 		{
 			SetNextState<BusinessAtackRight>(m_animation);
 		}

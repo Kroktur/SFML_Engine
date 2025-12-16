@@ -51,10 +51,12 @@ void BackGround::Update(float deltatime)
 {
 	if (hasWinn)
 		return;
-	if (m_scored <= 0)
-	{
-		throw std::runtime_error("ARRETEZ DE POLLUER");
-	}
+	if (hasLost)
+		return;
+	//if (m_scored <= 0)
+	//{
+	//	throw std::runtime_error("ARRETEZ DE POLLUER");
+	//}
 	if (m_scored > 5* factor)
 	{
 		if (m_scored >= 60)
@@ -84,6 +86,8 @@ void BackGround::Update(float deltatime)
 	}
 	else 
 	{
+		if (m_scored <= 0)
+			hasLost = true;
 		GetRectangle()->setTexture(&TextureLoader::Load("map 1.png", {}, {}));
 
 	}
@@ -102,4 +106,9 @@ void BackGround::RemoveScore()
 bool BackGround::HasWinn()
 {
 	return hasWinn;
+}
+
+bool BackGround::HasLost()
+{
+	return hasLost;
 }

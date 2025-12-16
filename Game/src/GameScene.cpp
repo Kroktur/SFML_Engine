@@ -76,7 +76,24 @@ void GameScene::MyUpdate(const float& deltatime)
 		m_init = false;
 	}
 
-	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 2.0f && !background->HasWinn() )
+	if (background->HasWinn())
+	{
+		AddEndingAction([&]
+			{
+				delete m_layer2;
+				m_layer2 = nullptr;
+			});
+	}
+	if (background->HasLost())
+	{
+		AddEndingAction([&]
+			{
+				delete m_layer2;
+				m_layer2 = nullptr;
+			});
+	}
+
+	if (m_timeSpawn.GetElapsedTime().AsSeconds() > 1.5f && !background->HasWinn() && !background->HasLost())
 	{
 		auto businessMan = new BusinessMan(m_layer2, 700);
 		businessMan->OnInit();
