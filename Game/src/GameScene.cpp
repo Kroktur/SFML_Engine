@@ -46,14 +46,13 @@ void GameScene::MyInit()
 	/*new CollidableRectangleRLGO(root);*/
 
 	 m_layer1 = new EmptyComposite(root);
-	
-	 m_layer2 = new EmptyComposite(root);
+	m_layer2 = new EmptyComposite(root);
 
-	 new WallToBlock(m_layer2, { -100,0 }, { 100, static_cast<float>(GetWindow().getSize().y) });
-	 new WallToBlock(m_layer2, { static_cast<float>(GetWindow().getSize().x),0 }, { 100, static_cast<float>(GetWindow().getSize().y) });
-	 new WallToDestroy(m_layer2, { -2 - 500.0f,0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
-	 new WallToDestroy(m_layer2, { static_cast<float>(GetWindow().getSize().x + 500),0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
 	 background =  new BackGround(m_layer1);
+	 new WallToBlock(m_layer1, { -100,0 }, { 100, static_cast<float>(GetWindow().getSize().y) });
+	 new WallToBlock(m_layer1, { static_cast<float>(GetWindow().getSize().x),0 }, { 100, static_cast<float>(GetWindow().getSize().y) });
+	 new WallToDestroy(m_layer1, { -2 - 500.0f,0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
+	 new WallToDestroy(m_layer1, { static_cast<float>(GetWindow().getSize().x + 500),0 }, { 2, static_cast<float>(GetWindow().getSize().y) });
 
 	 new TextBackGround(root);
 	new Music(root);
