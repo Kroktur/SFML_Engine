@@ -2,6 +2,7 @@
 #include "VectorND.h"
 #include "Vector2.h"
 #include "Vector3.h"
+#include <vector>
 namespace KT
 {
 	template<typename type, size_t size, template <typename>class VectorType> requires is_Vector<VectorType<type>>

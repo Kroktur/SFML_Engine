@@ -24,13 +24,6 @@ public:
 	void ProcessInput() override;
 	void Render(const float& alpha) override;
 	void Destroy() override;
-	MyPlayer* GetPlayer() const;
-	BaseComposite* GetLayer1() const;
-	BaseComposite* GetLayer2() const;
-	void StartGame();
-	void AddScore();
-	void RemoveScore();
-	void EndGame();
 private:
 	void MyInit();
 	void MyUpdate(const float& deltatime);
@@ -39,11 +32,4 @@ private:
 	void MyDestroy();
 	KT::FNDispatcher<IGameObject, IGameObject, void, KT::typelist<solver>> m_dispatcher;
 	std::optional<bool> m_debugMode;
-	MyPlayer* m_player;
-	BaseComposite* m_layer1;
-	BaseComposite* m_layer2;
-	KT::Chrono<float> m_timeSpawn;
-	std::optional<bool> m_init;
-	BackGround* background;
-	bool lost;
 };

@@ -1,7 +1,6 @@
 #include "GameScene.h"
 #include "SFML_Engine_Impl/PhysicSolver.h"
 
-#include "MyGameObject.h"
 void GameScene::Init()
 {
 	auto* root = static_cast<SFMLRoot<GameScene>*>(this);
@@ -137,39 +136,4 @@ void GameScene::Destroy()
 		{
 			go->OnDestroy();
 		});
-}
-
-MyPlayer* GameScene::GetPlayer() const
-{
-	return m_player;
-}
-
-BaseComposite* GameScene::GetLayer1() const
-{
-	return m_layer1;
-}
-
-BaseComposite* GameScene::GetLayer2() const
-{
-	return m_layer2;
-}
-
-void GameScene::StartGame()
-{
-	m_init = true;
-}
-
-void GameScene::AddScore()
-{
-	background->AddScore();
-}
-
-void GameScene::RemoveScore()
-{
-	background->RemoveScore();
-}
-
-void GameScene::EndGame()
-{
-	lost = true;
 }
