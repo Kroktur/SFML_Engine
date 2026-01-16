@@ -87,7 +87,6 @@ void GameScene::ProcessInput()
 		if (event->is<sf::Event::Closed>())
 			GetWindow().close();
 		// here for switch scene
-		
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B))
 	{
